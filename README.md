@@ -16,7 +16,7 @@
 - 悬停、单目标点和方形航点任务；
 - RViz2 飞机、旋翼、目标、任务航点和实际轨迹显示；
 - 自动输出 CSV、JSON、位置误差、RPM、姿态和三维轨迹图；
-- 16 项纯核心测试和脚本化实验验收。
+- 纯核心单元测试、ROS2 launch 集成测试和脚本化实验验收。
 
 ## 环境
 
@@ -220,7 +220,7 @@ colcon test --packages-select drone_core
 colcon test-result --verbose
 ```
 
-当前结果为 16 项测试、0 失败。测试覆盖电机响应、悬停平衡、力矩符号、mixer 往返、四元数、扰动入口、地面约束、非法输入，以及带电机滞后的悬停和三维目标点闭环。
+当前 `colcon test-result` 统计为 19 项、0 失败。核心测试覆盖电机响应、悬停平衡、力矩符号、mixer 往返、四元数、扰动入口、地面约束、非法输入，以及带电机滞后的悬停和三维目标点闭环。`drone_bringup` 的 launch 集成测试还会自动验证 Odometry、RPM 命令、`map -> base_link` TF、8 个持久化 Marker、1.5 m 起飞收敛和节点正常退出。
 
 ## 参数文件
 
@@ -255,6 +255,6 @@ colcon test-result --verbose
 - WSLg 无法打开 RViz2：确认 `echo $DISPLAY` 和 `echo $WAYLAND_DISPLAY` 非空；仍失败时使用 `use_rviz:=false` 运行 headless 实验，不影响核心仿真和自动验收。
 - `ros2 topic pub --once` 的电机命令很快归零：这是 0.5 秒命令超时保护。动力学直驱测试应使用 `--rate 50` 持续发布。
 
-仓库提供 [GitHub Actions 工作流](.github/workflows/ci.yml)，会在 ROS2 Humble 容器中执行完整构建、16 项核心测试、无 ROS standalone 测试以及三套非地图验收场景。
+仓库提供 [GitHub Actions 工作流](.github/workflows/ci.yml)，会在 ROS2 Humble 容器中执行完整构建、19 项单元/集成测试、无 ROS standalone 测试以及三套非地图验收场景。
 
 动力学公式、坐标系、电机布局与当前限制见 [docs/dynamics.md](docs/dynamics.md)，控制器原理见 [docs/controller.md](docs/controller.md)。

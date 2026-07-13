@@ -334,7 +334,7 @@ def build_report(root, output):
             Spacer(1, 10 * mm),
             paragraph("结论", style["h2"]),
             paragraph(
-                "三套实验最终位置误差均显著小于任务要求的 0.3 m。控制过程中未出现 RPM 饱和、姿态发散或非有限状态。项目同时提供 16 项核心测试、脚本化实验、71 秒演示视频与可复现实验数据。",
+                "三套实验最终位置误差均显著小于任务要求的 0.3 m。控制过程中未出现 RPM 饱和、姿态发散或非有限状态。项目同时提供 19 项单元/集成测试、脚本化实验、71 秒演示视频与可复现实验数据。",
                 style["body"],
             ),
             Spacer(1, 18 * mm),
@@ -559,7 +559,7 @@ def build_report(root, output):
             paragraph("7. 验证、参考关系与后续工作", style["h1"]),
             paragraph("验证体系", style["h2"]),
             paragraph(
-                "colcon test 当前统计 16 项测试、0 失败。覆盖电机一阶响应、悬停力平衡、电机布局力矩符号、mixer 往返、四元数归一化、地面约束、非法输入、扰动入口，以及带电机滞后的悬停和三维目标闭环。verify_experiments.py 进一步检查三套 ROS2 实验的最终误差、稳态误差、倾角、RPM 饱和和任务完成状态。",
+                "colcon test-result 当前统计 19 项测试、0 失败。核心测试覆盖电机一阶响应、悬停力平衡、电机布局力矩符号、mixer 往返、四元数归一化、地面约束、非法输入、扰动入口，以及带电机滞后的悬停和三维目标闭环。launch_testing 进一步验证 Odometry、RPM、TF、持久化 Marker、闭环起飞和进程退出；verify_experiments.py 检查三套 ROS2 实验的最终误差、稳态误差、倾角、RPM 饱和和任务完成状态。",
                 style["body"],
             ),
             paragraph("与参考仓库的关系", style["h2"]),
@@ -588,7 +588,7 @@ def build_report(root, output):
             ),
             paragraph("如果继续两周", style["h2"]),
             paragraph(
-                "优先级依次为：(1) 平滑位置/yaw 轨迹与角速度前馈；(2) 传感器噪声、风扰实验和鲁棒性指标；(3) 静态几何地图、障碍物膨胀和 A*；(4) launch_testing 自动集成测试；(5) rosbag 与桌面录屏演示。",
+                "优先级依次为：(1) 平滑位置/yaw 轨迹与角速度前馈；(2) 传感器噪声、风扰实验和鲁棒性指标；(3) 静态几何地图、障碍物膨胀和 A*；(4) 更完整的目标突变与故障注入集成测试；(5) rosbag 与桌面录屏演示。",
                 style["body"],
             ),
             Spacer(1, 4 * mm),

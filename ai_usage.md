@@ -67,3 +67,10 @@
 - 目标：生成可复现实验图、PDF 报告和 1 分钟以内演示视频。
 - AI 参与：从真实 ROS2 CSV 遥测生成实验图、数据驱动 MP4 和报告排版。
 - 人工验证：检查视频帧数、分辨率和解码状态；PDF 逐页渲染后检查文字、表格和图片是否裁切或重叠。
+
+### 10. 干净构建与 ROS2 集成测试
+
+- 目标：证明当前提交可从空缓存构建，并把 topic、TF、Marker 与闭环起飞检查从人工步骤变成自动测试。
+- AI 参与：增加无 ROS standalone CMake 模式、GitHub Actions 和 `launch_testing` 悬停测试。
+- 人工验证：首次 standalone 配置发现 `ament_export_*` 仍残留在独立分支外，修正后无 ROS 构建通过；首次 launch 测试使用了非 Humble API，功能断言通过但退出码断言报错，改为 `launch_testing.asserts.assertExitCodes` 后全量通过。
+- 最终覆盖：Odometry、RPM 命令、`map -> base_link` TF、Transient Local Marker、1.5 m 起飞误差、RPM 有限性和节点正常退出。
