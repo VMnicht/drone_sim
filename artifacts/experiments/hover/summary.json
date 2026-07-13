@@ -1,0 +1,16 @@
+{
+  "scenario": "hover",
+  "samples": 1979,
+  "duration_s": 11.999345539,
+  "final_position_error_m": 0.0006655131180266505,
+  "steady_state_error_m": 0.007155867522580265,
+  "arrival_time_s": 1.902106201,
+  "maximum_altitude_overshoot_m": 6.58760457383778e-06,
+  "path_length_m": 1.530903716691259,
+  "maximum_speed_mps": 1.4927618951817523,
+  "maximum_tilt_deg": 0.0,
+  "rpm_min": 0.0,
+  "rpm_max": 13707.887057099537,
+  "rpm_saturation_ratio": 0.0,
+  "mission_status": "not_applicable"
+}

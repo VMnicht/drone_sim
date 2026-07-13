@@ -1,0 +1,16 @@
+{
+  "scenario": "square",
+  "samples": 3718,
+  "duration_s": 20.000169357,
+  "final_position_error_m": 0.020325845070485637,
+  "steady_state_error_m": 0.017308498415078585,
+  "arrival_time_s": 2.5368167240000004,
+  "maximum_altitude_overshoot_m": 0.001543452944141599,
+  "path_length_m": 7.003636048835497,
+  "maximum_speed_mps": 1.5061008843229533,
+  "maximum_tilt_deg": 12.450495392564196,
+  "rpm_min": 0.0,
+  "rpm_max": 13712.561864702493,
+  "rpm_saturation_ratio": 0.0,
+  "mission_status": "completed;index=4;count=5"
+}
