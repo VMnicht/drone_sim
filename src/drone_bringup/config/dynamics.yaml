@@ -1,0 +1,35 @@
+quadrotor_dynamics_node:
+  ros__parameters:
+    # Rigid-body parameters, all in SI units.
+    mass: 1.0
+    gravity: 9.81
+    inertia_diagonal: [0.02, 0.02, 0.04]
+    arm_length: 0.17
+
+    # omega is rad/s inside drone_core.
+    thrust_coefficient: 1.91e-6
+    drag_moment_coefficient: 2.60e-7
+    motor_time_constant: 0.03
+    minimum_motor_speed: 0.0
+    maximum_motor_speed: 2300.0
+
+    linear_drag_coefficient: 0.05
+    angular_damping: [0.002, 0.002, 0.002]
+    ground_height: 0.0
+    ground_restitution: 0.0
+
+    # Explicit disturbance inputs. Kept at zero for the current hover stage.
+    disturbance_force_world: [0.0, 0.0, 0.0]
+    disturbance_torque_body: [0.0, 0.0, 0.0]
+
+    simulation_frequency: 200.0
+    command_timeout: 0.5
+    path_publish_frequency: 20.0
+    maximum_path_points: 4000
+
+    world_frame: map
+    body_frame: base_link
+    initial_position: [0.0, 0.0, 0.0]
+    initial_velocity: [0.0, 0.0, 0.0]
+    initial_rpy: [0.0, 0.0, 0.0]
+    initial_angular_velocity: [0.0, 0.0, 0.0]

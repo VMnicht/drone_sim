@@ -1,0 +1,29 @@
+position_controller_node:
+  ros__parameters:
+    # Must match the dynamics model.
+    mass: 1.0
+    gravity: 9.81
+    inertia_diagonal: [0.02, 0.02, 0.04]
+    arm_length: 0.17
+    thrust_coefficient: 1.91e-6
+    drag_moment_coefficient: 2.60e-7
+    minimum_motor_speed: 0.0
+    maximum_motor_speed: 2300.0
+
+    # Model-based position and geometric attitude controller.
+    position_gain: [3.0, 3.0, 6.0]
+    velocity_gain: [3.5, 3.5, 4.5]
+    attitude_gain: [0.40, 0.40, 0.25]
+    angular_rate_gain: [0.16, 0.16, 0.10]
+    maximum_torque: [1.0, 1.0, 0.5]
+    maximum_horizontal_acceleration: 3.0
+    maximum_vertical_acceleration: 6.0
+    maximum_tilt_degrees: 25.0
+    maximum_thrust_to_weight: 2.5
+
+    controller_frequency: 100.0
+    odometry_timeout: 0.2
+    world_frame: map
+    auto_takeoff: true
+    takeoff_position: [0.0, 0.0, 1.5]
+    takeoff_yaw: 0.0

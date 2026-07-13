@@ -1,0 +1,9 @@
+waypoint_mission_node:
+  ros__parameters:
+    # x, y, z, yaw
+    waypoints: [2.0, 1.0, 1.5, 0.0]
+    arrival_tolerance: 0.12
+    dwell_time: 0.8
+    start_delay: 0.5
+    world_frame: map
+

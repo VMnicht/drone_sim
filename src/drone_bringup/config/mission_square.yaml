@@ -1,0 +1,15 @@
+waypoint_mission_node:
+  ros__parameters:
+    # Take off, then visit the four corners and return to the first corner.
+    # Each group is x, y, z, yaw.
+    waypoints: [
+      0.0, 0.0, 1.5, 0.0,
+      1.0, 0.0, 1.5, 0.0,
+      1.0, 1.0, 1.5, 0.0,
+      0.0, 1.0, 1.5, 0.0,
+      0.0, 0.0, 1.5, 0.0
+    ]
+    arrival_tolerance: 0.12
+    dwell_time: 0.6
+    start_delay: 0.5
+    world_frame: map
