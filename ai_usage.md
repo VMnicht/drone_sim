@@ -39,7 +39,7 @@
 
 - 目标：解决 Drone Model 状态在 OK/Error 间切换以及 Marker 闪烁。
 - AI 参与：分析 Marker 时间戳、重复静态发布与 `/tf` 到达顺序之间的竞争关系。
-- 人工验证：第一轮零时间戳和 `frame_locked=true` 缓解了问题，但仍观察到话题状态间歇报错；第二轮将不变的机体几何改为 Reliable + Transient Local 一次性发布，并让目标点只在参考变化时发布。运行时确认缓存样本可被晚加入订阅者读取、`map -> base_link` 连续有效，避免静态 Marker 以 20 Hz 反复进入 TF 消息过滤器。
+- 人工验证：第一轮零时间戳和 `frame_locked=true` 缓解了问题；第二轮改为 Reliable + Transient Local 一次性发布，解决闪烁但暴露了 RViz 在首次 TF 尚未建立时可能永久丢失模型的问题；最终采用 1 Hz 低频刷新，让 RViz 最多 1 秒自动恢复模型，同时避免原来 20 Hz 反复进入 TF 消息过滤器。
 
 ### 6. 自动实验与指标工具
 

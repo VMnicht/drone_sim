@@ -487,7 +487,7 @@ def build_report(root, output):
             ),
             paragraph("RViz2 方案", style["h2"]),
             paragraph(
-                "RViz2 固定坐标系为 map，显示地面网格、map -> base_link TF、飞机 Marker、当前目标、任务航点和实际 Path。飞机由机身、X 型机臂、四旋翼、机头箭头和文字组成。静态机体 Marker 使用零时间戳、frame_locked=true 以及 Reliable + Transient Local QoS 一次性发布，避免重复进入 TF 消息过滤器造成闪烁。",
+                "RViz2 固定坐标系为 map，显示地面网格、map -> base_link TF、飞机 Marker、当前目标、任务航点和实际 Path。飞机由机身、X 型机臂、四旋翼、机头箭头和文字组成。静态机体 Marker 使用零时间戳、frame_locked=true 以及 Reliable + Transient Local QoS，并以 1 Hz 低频刷新；这样既能在 TF 建立较晚时自动恢复模型，又避免旧版 20 Hz 刷新造成消息过滤器状态抖动。",
                 style["body"],
             ),
             image(experiment_root / "target" / "trajectory_3d.png", 150 * mm, 82 * mm),

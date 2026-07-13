@@ -99,7 +99,7 @@ class TestHoverSystem(unittest.TestCase):
         self.assertGreater(len(self.odometry_samples), 100)
         self.assertGreater(len(self.motor_samples), 50)
         self.assertTrue(self.seen_map_to_base_link)
-        self.assertTrue(self.marker_samples)
+        self.assertGreaterEqual(len(self.marker_samples), 2)
         self.assertEqual(len(self.marker_samples[-1].markers), 8)
 
         final_odometry = self.odometry_samples[-1]

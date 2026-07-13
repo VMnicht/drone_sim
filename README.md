@@ -208,7 +208,7 @@ python3 scripts/verify_experiments.py
 - `/tf`：`map -> base_link`
 - `/drone/reset` (`std_srvs/srv/Empty`)
 
-主要频率：动力学与 TF 200 Hz，控制器 100 Hz，Path 20 Hz；静态机体 Marker 使用 Reliable + Transient Local QoS 一次性发布，并通过 `frame_locked` 跟随 TF。
+主要频率：动力学与 TF 200 Hz，控制器 100 Hz，Path 20 Hz；静态机体 Marker 使用 Reliable + Transient Local QoS，以 1 Hz 低频刷新并通过 `frame_locked` 跟随 TF。
 
 详细设计与阶段计划见 [工程规划.md](工程规划.md)。
 
@@ -249,7 +249,8 @@ colcon test-result --verbose
 
 ## 故障排查
 
-- RViz2 的 Drone Model 闪烁或话题状态反复变为 Error：确认使用最新构建，并重新启动整套 launch。当前机体 Marker 必须是 Transient Local、零时间戳、`frame_locked=true` 的一次性样本；不要同时启动多个 `drone_marker_node`。
+- RViz2 看不到 Drone Model：确认使用最新构建并等待最多 1 秒；模型会在 TF 建立后低频重发。若仍不可见，检查 `/drone/markers` 是否有一个发布者以及 `map -> base_link` TF 是否存在。
+- RViz2 的 Drone Model 闪烁或话题状态反复变为 Error：确认 Marker 为 Transient Local、零时间戳且 `frame_locked=true`，刷新频率为 1 Hz；不要同时启动多个 `drone_marker_node`。
 - RViz2 报 `Fixed Frame [map] does not exist`：先确认 `quadrotor_dynamics_node` 正在运行，再用 `ros2 run tf2_ros tf2_echo map base_link` 检查 TF。节点刚启动时的一次短暂等待正常，持续报错则不正常。
 - 强制结束多个 ROS2 进程后，CLI 卡住或节点互相不可见：先执行 `ros2 daemon stop`；若 Fast DDS 发现状态仍残留，可在所有相关终端统一设置新的测试域，例如 `export ROS_DOMAIN_ID=43`，再重新启动。
 - WSLg 无法打开 RViz2：确认 `echo $DISPLAY` 和 `echo $WAYLAND_DISPLAY` 非空；仍失败时使用 `use_rviz:=false` 运行 headless 实验，不影响核心仿真和自动验收。

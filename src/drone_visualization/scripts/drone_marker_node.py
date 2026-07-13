@@ -15,9 +15,18 @@ class DroneMarkerNode(Node):
         self.declare_parameter("body_frame", "base_link")
         self.declare_parameter("world_frame", "map")
         self.declare_parameter("arm_length", 0.17)
+        self.declare_parameter("model_publish_frequency", 1.0)
         self.body_frame = self.get_parameter("body_frame").value
         self.world_frame = self.get_parameter("world_frame").value
         self.arm_length = float(self.get_parameter("arm_length").value)
+        self.model_publish_frequency = float(
+            self.get_parameter("model_publish_frequency").value
+        )
+        if (
+            not math.isfinite(self.model_publish_frequency)
+            or self.model_publish_frequency <= 0.0
+        ):
+            raise ValueError("model_publish_frequency must be finite and positive")
         self.reference = None
 
         marker_qos = QoSProfile(depth=1)
@@ -35,13 +44,14 @@ class DroneMarkerNode(Node):
         self.reference_subscription = self.create_subscription(
             PoseStamped, "/drone/reference", self.reference_callback, reference_qos
         )
-        # The model geometry never changes in base_link. Publish it once and
-        # retain the sample for late RViz subscribers; frame_locked makes RViz
-        # follow the continuously updated map -> base_link transform. Repeating
-        # the same MarkerArray needlessly sends every sample through RViz's TF
-        # message filter and makes its status alternate between OK and Error
-        # when Marker and /tf samples arrive in the opposite order.
-        self.initial_publish_timer = self.create_timer(0.25, self.publish_model_once)
+        # Keep a retained sample for late RViz subscribers and refresh it at a
+        # deliberately low rate. RViz can discard the very first Marker if it
+        # starts before map -> base_link exists; a later refresh restores the
+        # model. Zero stamps and frame_locked avoid the old Marker/TF race,
+        # while 1 Hz avoids the unnecessary 20 Hz message-filter traffic.
+        self.model_publish_timer = self.create_timer(
+            1.0 / self.model_publish_frequency, self.publish_model
+        )
 
     @staticmethod
     def color(marker, red, green, blue, alpha=1.0):
@@ -151,9 +161,8 @@ class DroneMarkerNode(Node):
         markers.markers.append(goal)
         return markers
 
-    def publish_model_once(self):
+    def publish_model(self):
         self.marker_publisher.publish(self.drone_markers())
-        self.initial_publish_timer.cancel()
 
 
 def main(args=None):
