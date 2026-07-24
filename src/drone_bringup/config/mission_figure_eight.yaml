@@ -1,0 +1,20 @@
+analytic_trajectory_node:
+  ros__parameters:
+    trajectory_type: figure_eight
+    trajectory_center: [0.0, 0.0, 1.5]
+    trajectory_radius_x: 1.5
+    trajectory_radius_y: 0.8
+    trajectory_period: 10.0
+    trajectory_start_delay: 2.0
+    trajectory_preview_horizon: 10.0
+    trajectory_face_velocity: true
+
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: false
+
+experiment_recorder:
+  ros__parameters:
+    scenario: figure_eight
+    duration: 23.0
+    output_dir: artifacts/experiments/figure_eight

@@ -1,0 +1,65 @@
+[INFO] [launch]: All log files can be found below /home/tang/.ros/log/2026-07-23-16-24-03-337641-LAPTOP-AC5N9NOG-31077
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fault_injector_node.py-1]: process started with pid [31096]
+[INFO] [quadrotor_dynamics_node-2]: process started with pid [31098]
+[INFO] [position_controller_node-3]: process started with pid [31100]
+[INFO] [sensor_simulator_node-4]: process started with pid [31102]
+[INFO] [drone_marker_node.py-5]: process started with pid [31104]
+[position_controller_node-3] [INFO] [1784795043.392916236] [position_controller_node]: Model-based controller ready at 100.0 Hz; auto takeoff enabled to (0.00, 0.00, 1.50)
+[sensor_simulator_node-4] [INFO] [1784795043.394393036] [sensor_simulator_node]: Sensor simulator ready at 100.0 Hz; noise enabled
+[quadrotor_dynamics_node-2] [INFO] [1784795043.396155059] [quadrotor_dynamics_node]: Dynamics ready: fixed-step 200.0 Hz, state 100.0 Hz, path sample/publish 10.0/5.0 Hz; hover speed 1133.15 rad/s (10820.8 RPM)
+[quadrotor_dynamics_node-2] [INFO] [1784795043.396240580] [quadrotor_dynamics_node]: A non-zero external disturbance is configured (disabled)
+[fault_injector_node.py-1] [INFO] [1784795043.572332304] [fault_injector_node]: Fault injector ready in mode 'none', enabled=False
+[INFO] [rviz2-6]: process started with pid [31156]
+[rviz2-6] [INFO] [1784795045.715470227] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-6] [INFO] [1784795045.715651474] [rviz2]: OpenGl version: 4.2 (GLSL 4.2)
+[rviz2-6] [INFO] [1784795045.760759632] [rviz2]: Stereo is NOT SUPPORTED
+[quadrotor_dynamics_node-2] [INFO] [1784795048.400808216] [quadrotor_dynamics_node]: Timing 5.00 s: integration 199.8 Hz, state/TF 99.9 Hz, path 5.0 Hz, backlog 4.259 ms
+[quadrotor_dynamics_node-2] [INFO] [1784795053.402669072] [quadrotor_dynamics_node]: Timing 5.00 s: integration 200.1 Hz, state/TF 100.0 Hz, path 5.0 Hz, backlog 1.396 ms
+[quadrotor_dynamics_node-2] [INFO] [1784795056.883895622] [quadrotor_dynamics_node]: Timing 5.00 s: integration 200.0 Hz, state/TF 100.0 Hz, path 5.0 Hz, backlog 1.748 ms
+[quadrotor_dynamics_node-2] [INFO] [1784795061.884914162] [quadrotor_dynamics_node]: Timing 5.00 s: integration 200.0 Hz, state/TF 100.0 Hz, path 5.0 Hz, backlog 2.762 ms
+[quadrotor_dynamics_node-2] [INFO] [1784795066.886489285] [quadrotor_dynamics_node]: Timing 5.00 s: integration 199.9 Hz, state/TF 100.0 Hz, path 5.0 Hz, backlog 4.350 ms
+[quadrotor_dynamics_node-2] [INFO] [1784795071.889225553] [quadrotor_dynamics_node]: Timing 5.00 s: integration 200.1 Hz, state/TF 100.1 Hz, path 5.0 Hz, backlog 1.923 ms
+[quadrotor_dynamics_node-2] [INFO] [1784795076.891963355] [quadrotor_dynamics_node]: Timing 5.00 s: integration 199.9 Hz, state/TF 99.9 Hz, path 5.0 Hz, backlog 4.671 ms
+[sensor_simulator_node-4] [INFO] [1784795080.310554405] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[rviz2-6] [INFO] [1784795080.310528287] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[position_controller_node-3] [INFO] [1784795080.310565352] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[quadrotor_dynamics_node-2] [INFO] [1784795080.310574317] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fault_injector_node.py-1] Traceback (most recent call last):
+[fault_injector_node.py-1]   File "/home/tang/drone_sim_ws/install/drone_faults/lib/drone_faults/fault_injector_node.py", line 239, in <module>
+[fault_injector_node.py-1]     main()
+[fault_injector_node.py-1]   File "/home/tang/drone_sim_ws/install/drone_faults/lib/drone_faults/fault_injector_node.py", line 226, in main
+[fault_injector_node.py-1]     rclpy.spin(node)
+[fault_injector_node.py-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[fault_injector_node.py-1]     executor.spin_once()
+[fault_injector_node.py-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[fault_injector_node.py-1]     self._spin_once_impl(timeout_sec)
+[fault_injector_node.py-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
+[fault_injector_node.py-1]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[fault_injector_node.py-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
+[fault_injector_node.py-1]     return next(self._cb_iter)
+[fault_injector_node.py-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
+[fault_injector_node.py-1]     raise ExternalShutdownException()
+[fault_injector_node.py-1] rclpy.executors.ExternalShutdownException
+[drone_marker_node.py-5] Traceback (most recent call last):
+[drone_marker_node.py-5]   File "/home/tang/drone_sim_ws/install/drone_visualization/lib/drone_visualization/drone_marker_node.py", line 261, in <module>
+[drone_marker_node.py-5]     main()
+[drone_marker_node.py-5]   File "/home/tang/drone_sim_ws/install/drone_visualization/lib/drone_visualization/drone_marker_node.py", line 248, in main
+[drone_marker_node.py-5]     rclpy.spin(node)
+[drone_marker_node.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[drone_marker_node.py-5]     executor.spin_once()
+[drone_marker_node.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[drone_marker_node.py-5]     self._spin_once_impl(timeout_sec)
+[drone_marker_node.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
+[drone_marker_node.py-5]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[drone_marker_node.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
+[drone_marker_node.py-5]     return next(self._cb_iter)
+[drone_marker_node.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
+[drone_marker_node.py-5]     raise ExternalShutdownException()
+[drone_marker_node.py-5] rclpy.executors.ExternalShutdownException
+[INFO] [position_controller_node-3]: process has finished cleanly [pid 31100]
+[INFO] [sensor_simulator_node-4]: process has finished cleanly [pid 31102]
+[INFO] [quadrotor_dynamics_node-2]: process has finished cleanly [pid 31098]
+[ERROR] [fault_injector_node.py-1]: process has died [pid 31096, exit code 1, cmd '/home/tang/drone_sim_ws/install/drone_faults/lib/drone_faults/fault_injector_node.py --ros-args -r __node:=fault_injector_node --params-file /home/tang/drone_sim_ws/install/drone_bringup/share/drone_bringup/config/interfaces.yaml --params-file /home/tang/drone_sim_ws/install/drone_bringup/share/drone_bringup/config/faults.yaml'].
+[ERROR] [drone_marker_node.py-5]: process has died [pid 31104, exit code 1, cmd '/home/tang/drone_sim_ws/install/drone_visualization/lib/drone_visualization/drone_marker_node.py --ros-args -r __node:=drone_marker_node --params-file /home/tang/drone_sim_ws/install/drone_bringup/share/drone_bringup/config/interfaces.yaml --params-file /home/tang/drone_sim_ws/install/drone_bringup/share/drone_bringup/config/model.yaml --params-file /home/tang/drone_sim_ws/install/drone_bringup/share/drone_bringup/config/visualization.yaml'].
+[INFO] [rviz2-6]: process has finished cleanly [pid 31156]

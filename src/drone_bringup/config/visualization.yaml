@@ -1,0 +1,39 @@
+drone_marker_node:
+  ros__parameters:
+    # Frames and interfaces.
+    # Frames and topic names are centralized in interfaces.yaml.
+    marker_qos_depth: 1
+    reference_qos_depth: 1
+    model_publish_frequency: 1.0
+    # Moving references are rendered at half the 60 FPS RViz refresh rate;
+    # control/reference topics themselves remain at their original frequency.
+    goal_publish_frequency: 30.0
+
+    # X-frame vehicle geometry (metres).
+    # arm_length is shared with the physical model through model.yaml.
+    body_size: [0.24, 0.16, 0.08]
+    body_color: [0.08, 0.28, 0.85, 1.0]
+    arm_width: 0.025
+    arm_height: 0.02
+    arm_color: [0.12, 0.12, 0.15, 1.0]
+    rotor_diameter: 0.14
+    rotor_thickness: 0.012
+    rotor_height: 0.04
+    rotor_even_color: [0.95, 0.25, 0.12, 0.85]
+    rotor_odd_color: [0.12, 0.75, 0.95, 0.85]
+
+    # Heading arrow and label.
+    nose_length: 0.32
+    nose_height: 0.07
+    nose_shaft_diameter: 0.025
+    nose_head_diameter: 0.05
+    nose_head_length: 0.05
+    nose_color: [1.0, 0.85, 0.05, 1.0]
+    label_height: 0.24
+    label_text_height: 0.10
+    label_text: ROS2 Quadrotor
+    label_color: [0.95, 0.95, 0.95, 1.0]
+
+    # Current reference marker.
+    goal_diameter: 0.18
+    goal_color: [0.15, 0.95, 0.25, 0.9]

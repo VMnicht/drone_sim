@@ -1,0 +1,11 @@
+Subscribed to [/drone/path]
+106.40 KB/s from 5 messages
+	Message size mean: 20.19 KB min: 19.90 KB max: 20.48 KB
+171.71 KB/s from 16 messages
+	Message size mean: 20.98 KB min: 19.90 KB max: 22.06 KB
+151.67 KB/s from 21 messages
+	Message size mean: 21.34 KB min: 19.90 KB max: 22.78 KB
+142.68 KB/s from 26 messages
+	Message size mean: 21.70 KB min: 19.90 KB max: 23.50 KB
+138.06 KB/s from 31 messages
+	Message size mean: 22.06 KB min: 19.90 KB max: 24.22 KB

@@ -14,6 +14,7 @@
 
 #include "drone_core/model_based_controller.hpp"
 #include "drone_msgs/msg/motor_rpm.hpp"
+#include "drone_msgs/msg/trajectory_point.hpp"
 
 namespace drone_controller
 {
@@ -57,34 +58,72 @@ public:
   {
     const auto model_parameters = loadModelParameters();
     const auto controller_parameters = loadControllerParameters();
+    hover_motor_rpm_ = std::sqrt(
+      model_parameters.mass * model_parameters.gravity /
+      (4.0 * model_parameters.thrust_coefficient)) * drone_core::kRadPerSecondToRpm;
     controller_ = std::make_unique<drone_core::ModelBasedController>(
       model_parameters, controller_parameters);
 
     controller_frequency_ = declare_parameter<double>("controller_frequency", 100.0);
     odometry_timeout_ = declare_parameter<double>("odometry_timeout", 0.2);
+    odometry_timeout_hover_enabled_ =
+      declare_parameter<bool>("odometry_timeout_hover_enabled", true);
     auto_takeoff_ = declare_parameter<bool>("auto_takeoff", true);
     world_frame_ = declare_parameter<std::string>("world_frame", "map");
+    body_frame_ = declare_parameter<std::string>("body_frame", "base_link");
     reference_.position_world = vectorParameter(*this, "takeoff_position", {0.0, 0.0, 1.5});
     reference_.yaw = declare_parameter<double>("takeoff_yaw", 0.0);
+    motor_command_topic_ =
+      declare_parameter<std::string>("motor_command_topic", "/drone/motor_rpm_cmd");
+    reference_topic_ =
+      declare_parameter<std::string>("reference_topic", "/drone/reference");
+    odometry_topic_ = declare_parameter<std::string>("odometry_topic", "/drone/odom");
+    goal_topic_ = declare_parameter<std::string>("goal_topic", "/drone/goal");
+    trajectory_reference_topic_ = declare_parameter<std::string>(
+      "trajectory_reference_topic", "/drone/trajectory_reference");
+    command_qos_depth_ = declare_parameter<int>("command_qos_depth", 20);
+    reference_qos_depth_ = declare_parameter<int>("reference_qos_depth", 1);
+    odometry_qos_depth_ = declare_parameter<int>("odometry_qos_depth", 20);
+    goal_qos_depth_ = declare_parameter<int>("goal_qos_depth", 10);
+    trajectory_qos_depth_ = declare_parameter<int>("trajectory_qos_depth", 10);
+    minimum_quaternion_norm_ = declare_parameter<double>("minimum_quaternion_norm", 1e-9);
+    goal_change_position_tolerance_ =
+      declare_parameter<double>("goal_change_position_tolerance", 1e-6);
+    goal_change_yaw_tolerance_ =
+      declare_parameter<double>("goal_change_yaw_tolerance", 1e-6);
+    diagnostics_log_throttle_ms_ =
+      declare_parameter<int>("diagnostics_log_throttle_ms", 1000);
 
     if (!std::isfinite(controller_frequency_) || controller_frequency_ <= 0.0 ||
       !std::isfinite(odometry_timeout_) || odometry_timeout_ <= 0.0 ||
-      !reference_.isFinite())
+      !reference_.isFinite() || !std::isfinite(minimum_quaternion_norm_) ||
+      minimum_quaternion_norm_ <= 0.0 ||
+      !std::isfinite(goal_change_position_tolerance_) ||
+      goal_change_position_tolerance_ < 0.0 ||
+      !std::isfinite(goal_change_yaw_tolerance_) || goal_change_yaw_tolerance_ < 0.0 ||
+      command_qos_depth_ <= 0 || reference_qos_depth_ <= 0 ||
+      odometry_qos_depth_ <= 0 || goal_qos_depth_ <= 0 || trajectory_qos_depth_ <= 0 ||
+      diagnostics_log_throttle_ms_ <= 0 || world_frame_.empty() || body_frame_.empty() ||
+      motor_command_topic_.empty() || reference_topic_.empty() ||
+      odometry_topic_.empty() || goal_topic_.empty() || trajectory_reference_topic_.empty())
     {
       throw std::invalid_argument("Invalid controller timing or takeoff reference");
     }
     has_reference_ = auto_takeoff_;
 
-    command_publisher_ =
-      create_publisher<drone_msgs::msg::MotorRPM>("/drone/motor_rpm_cmd", 20);
+    command_publisher_ = create_publisher<drone_msgs::msg::MotorRPM>(
+      motor_command_topic_, command_qos_depth_);
     reference_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(
-      "/drone/reference", rclcpp::QoS(1).transient_local().reliable());
+      reference_topic_, rclcpp::QoS(reference_qos_depth_).transient_local().reliable());
     odometry_subscription_ = create_subscription<nav_msgs::msg::Odometry>(
-      "/drone/odom", 20,
+      odometry_topic_, odometry_qos_depth_,
       std::bind(&PositionControllerNode::odometryCallback, this, std::placeholders::_1));
     goal_subscription_ = create_subscription<geometry_msgs::msg::PoseStamped>(
-      "/drone/goal", 10,
+      goal_topic_, goal_qos_depth_,
       std::bind(&PositionControllerNode::goalCallback, this, std::placeholders::_1));
+    trajectory_subscription_ = create_subscription<drone_msgs::msg::TrajectoryPoint>(
+      trajectory_reference_topic_, trajectory_qos_depth_,
+      std::bind(&PositionControllerNode::trajectoryCallback, this, std::placeholders::_1));
 
     const auto period = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(1.0 / controller_frequency_));
@@ -153,8 +192,12 @@ private:
     Eigen::Quaterniond orientation{
       message->pose.pose.orientation.w, message->pose.pose.orientation.x,
       message->pose.pose.orientation.y, message->pose.pose.orientation.z};
-    if (!orientation.coeffs().array().isFinite().all() || orientation.norm() < 1e-9) {
-      RCLCPP_ERROR_THROTTLE(get_logger(), *get_clock(), 1000, "Rejected invalid odometry quaternion");
+    if (!orientation.coeffs().array().isFinite().all() ||
+      orientation.norm() < minimum_quaternion_norm_)
+    {
+      RCLCPP_ERROR_THROTTLE(
+        get_logger(), *get_clock(), diagnostics_log_throttle_ms_,
+        "Rejected invalid odometry quaternion");
       return;
     }
     orientation.normalize();
@@ -170,11 +213,13 @@ private:
       message->twist.twist.angular.x, message->twist.twist.angular.y,
       message->twist.twist.angular.z};
     if (!state_.isFinite()) {
-      RCLCPP_ERROR_THROTTLE(get_logger(), *get_clock(), 1000, "Rejected non-finite odometry");
+      RCLCPP_ERROR_THROTTLE(
+        get_logger(), *get_clock(), diagnostics_log_throttle_ms_,
+        "Rejected non-finite odometry");
       return;
     }
     has_odometry_ = true;
-    last_odometry_time_ = now();
+    last_odometry_wall_time_ = std::chrono::steady_clock::now();
   }
 
   void goalCallback(const geometry_msgs::msg::PoseStamped::SharedPtr message)
@@ -188,8 +233,9 @@ private:
       return;
     }
     const bool changed = !has_reference_ ||
-      (candidate.position_world - reference_.position_world).norm() > 1e-6 ||
-      std::abs(candidate.yaw - reference_.yaw) > 1e-6;
+      (candidate.position_world - reference_.position_world).norm() >
+      goal_change_position_tolerance_ ||
+      std::abs(candidate.yaw - reference_.yaw) > goal_change_yaw_tolerance_;
     reference_ = candidate;
     has_reference_ = true;
     if (changed) {
@@ -200,21 +246,60 @@ private:
     }
   }
 
+  void trajectoryCallback(const drone_msgs::msg::TrajectoryPoint::SharedPtr message)
+  {
+    drone_core::Reference candidate;
+    candidate.position_world = Eigen::Vector3d{
+      message->position.x, message->position.y, message->position.z};
+    candidate.velocity_world = Eigen::Vector3d{
+      message->velocity.x, message->velocity.y, message->velocity.z};
+    candidate.acceleration_world = Eigen::Vector3d{
+      message->acceleration.x, message->acceleration.y, message->acceleration.z};
+    candidate.yaw = message->yaw;
+    candidate.yaw_rate = message->yaw_rate;
+    if (!candidate.isFinite()) {
+      RCLCPP_ERROR_THROTTLE(
+        get_logger(), *get_clock(), diagnostics_log_throttle_ms_,
+        "Rejected non-finite trajectory reference");
+      return;
+    }
+    reference_ = candidate;
+    has_reference_ = true;
+  }
+
   void update()
   {
     const rclcpp::Time stamp = now();
-    if (!has_odometry_ || !has_reference_ ||
-      (stamp - last_odometry_time_).seconds() > odometry_timeout_)
-    {
+    const auto wall_now = std::chrono::steady_clock::now();
+    if (!has_odometry_ || !has_reference_) {
       publishZeroCommand(stamp);
       return;
+    }
+    const bool odometry_timed_out =
+      std::chrono::duration<double>(wall_now - last_odometry_wall_time_).count() >
+      odometry_timeout_;
+    if (odometry_timed_out) {
+      if (!odometry_failsafe_active_) {
+        RCLCPP_WARN(get_logger(), "Odometry timed out; applying motor failsafe");
+        odometry_failsafe_active_ = true;
+      }
+      if (odometry_timeout_hover_enabled_) {
+        publishHoverCommand(stamp);
+      } else {
+        publishZeroCommand(stamp);
+      }
+      return;
+    }
+    if (odometry_failsafe_active_) {
+      RCLCPP_INFO(get_logger(), "Odometry recovered; resuming closed-loop control");
+      odometry_failsafe_active_ = false;
     }
 
     try {
       const auto output = controller_->compute(state_, reference_);
       drone_msgs::msg::MotorRPM command;
       command.header.stamp = stamp;
-      command.header.frame_id = "base_link";
+      command.header.frame_id = body_frame_;
       for (std::size_t i = 0; i < drone_core::kMotorCount; ++i) {
         command.rpm[i] =
           output.motor_angular_velocity[i] * drone_core::kRadPerSecondToRpm;
@@ -223,7 +308,8 @@ private:
       publishReference(stamp);
     } catch (const std::exception & exception) {
       RCLCPP_ERROR_THROTTLE(
-        get_logger(), *get_clock(), 1000, "Controller update failed: %s", exception.what());
+        get_logger(), *get_clock(), diagnostics_log_throttle_ms_,
+        "Controller update failed: %s", exception.what());
       publishZeroCommand(stamp);
     }
   }
@@ -244,8 +330,17 @@ private:
   {
     drone_msgs::msg::MotorRPM command;
     command.header.stamp = stamp;
-    command.header.frame_id = "base_link";
+    command.header.frame_id = body_frame_;
     command.rpm.fill(0.0);
+    command_publisher_->publish(command);
+  }
+
+  void publishHoverCommand(const rclcpp::Time & stamp)
+  {
+    drone_msgs::msg::MotorRPM command;
+    command.header.stamp = stamp;
+    command.header.frame_id = body_frame_;
+    command.rpm.fill(hover_motor_rpm_);
     command_publisher_->publish(command);
   }
 
@@ -255,15 +350,34 @@ private:
   bool has_odometry_{false};
   bool has_reference_{false};
   bool auto_takeoff_{true};
+  bool odometry_timeout_hover_enabled_{true};
+  bool odometry_failsafe_active_{false};
   double controller_frequency_{100.0};
   double odometry_timeout_{0.2};
+  double hover_motor_rpm_{0.0};
   std::string world_frame_{"map"};
-  rclcpp::Time last_odometry_time_;
+  std::string body_frame_{"base_link"};
+  std::string motor_command_topic_{"/drone/motor_rpm_cmd"};
+  std::string reference_topic_{"/drone/reference"};
+  std::string odometry_topic_{"/drone/odom"};
+  std::string goal_topic_{"/drone/goal"};
+  std::string trajectory_reference_topic_{"/drone/trajectory_reference"};
+  int command_qos_depth_{20};
+  int reference_qos_depth_{1};
+  int odometry_qos_depth_{20};
+  int goal_qos_depth_{10};
+  int trajectory_qos_depth_{10};
+  double minimum_quaternion_norm_{1e-9};
+  double goal_change_position_tolerance_{1e-6};
+  double goal_change_yaw_tolerance_{1e-6};
+  int diagnostics_log_throttle_ms_{1000};
+  std::chrono::steady_clock::time_point last_odometry_wall_time_;
 
   rclcpp::Publisher<drone_msgs::msg::MotorRPM>::SharedPtr command_publisher_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr reference_publisher_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_subscription_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_subscription_;
+  rclcpp::Subscription<drone_msgs::msg::TrajectoryPoint>::SharedPtr trajectory_subscription_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 

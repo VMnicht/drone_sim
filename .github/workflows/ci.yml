@@ -46,9 +46,9 @@ jobs:
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           ros2 launch drone_bringup experiment.launch.py \
-            scenario:=hover duration:=12.0 output_dir:=/tmp/acceptance/hover
+            scenario:=hover output_dir:=/tmp/acceptance/hover
           ros2 launch drone_bringup experiment.launch.py \
-            scenario:=target duration:=16.0 output_dir:=/tmp/acceptance/target
+            scenario:=target output_dir:=/tmp/acceptance/target
           ros2 launch drone_bringup experiment.launch.py \
-            scenario:=square duration:=20.0 output_dir:=/tmp/acceptance/square
+            scenario:=square output_dir:=/tmp/acceptance/square
           python3 scripts/verify_experiments.py --root /tmp/acceptance

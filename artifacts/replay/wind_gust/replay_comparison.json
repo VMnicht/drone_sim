@@ -1,0 +1,12 @@
+{
+  "scenario": "wind_gust",
+  "tolerance": 0.08,
+  "differences": {
+    "final_position_error_m": 0.03587630282162092,
+    "steady_state_error_m": 0.004366359417220321,
+    "maximum_disturbance_force_n": 0.0,
+    "disturbance_peak_error_m": 0.008296040264797355,
+    "disturbance_recovery_time_s": 0.0041876339999991075
+  },
+  "passed": true
+}

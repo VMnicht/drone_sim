@@ -1,0 +1,93 @@
+[INFO] [launch]: All log files can be found below /home/tang/.ros/log/2026-07-23-17-08-53-715438-LAPTOP-AC5N9NOG-45719
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [static_obstacle_map_node.py-1]: process started with pid [45720]
+[INFO] [local_perception_node.py-2]: process started with pid [45722]
+[INFO] [voxel_astar_planner_node.py-3]: process started with pid [45724]
+[INFO] [quadrotor_dynamics_node-4]: process started with pid [45726]
+[INFO] [fault_injector_node.py-5]: process started with pid [45728]
+[INFO] [sensor_simulator_node-6]: process started with pid [45730]
+[INFO] [drone_marker_node.py-7]: process started with pid [45732]
+[INFO] [experiment_recorder.py-8]: process started with pid [45734]
+[INFO] [ros2-9]: process started with pid [45736]
+[sensor_simulator_node-6] [INFO] [1784797733.781811726] [sensor_simulator_node]: Sensor simulator ready at 100.0 Hz; noise enabled
+[quadrotor_dynamics_node-4] [INFO] [1784797733.783855559] [quadrotor_dynamics_node]: Dynamics ready: fixed-step 200.0 Hz, state 100.0 Hz, path sample/publish 10.0/5.0 Hz; hover speed 1133.15 rad/s (10820.8 RPM)
+[quadrotor_dynamics_node-4] [INFO] [1784797733.783938583] [quadrotor_dynamics_node]: A non-zero external disturbance is configured (disabled)
+[fault_injector_node.py-5] [INFO] [1784797733.953636989] [fault_injector_node]: Fault injector ready in mode 'none', enabled=False
+[ros2-9] stdin is not a terminal device. Keyboard handling disabled.[INFO] [1784797733.975494623] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[ros2-9] [INFO] [1784797733.978436546] [rosbag2_storage]: Opened database '/home/tang/drone_sim_ws/artifacts/experiments/five_obstacles/rosbag_20260723T090853Z/rosbag_20260723T090853Z_0.db3' for READ_WRITE.
+[ros2-9] [INFO] [1784797733.979985083] [rosbag2_recorder]: Listening for topics...
+[ros2-9] [INFO] [1784797733.980009076] [rosbag2_recorder]: Event publisher thread: Starting
+[ros2-9] [INFO] [1784797733.982622564] [rosbag2_recorder]: Subscribed to topic '/fault/status'
+[ros2-9] [INFO] [1784797733.984815581] [rosbag2_recorder]: Subscribed to topic '/drone/truth/odom'
+[ros2-9] [INFO] [1784797733.986056500] [rosbag2_recorder]: Subscribed to topic '/drone/path'
+[ros2-9] [INFO] [1784797733.987284910] [rosbag2_recorder]: Subscribed to topic '/drone/motor_rpm'
+[ros2-9] [INFO] [1784797733.988684082] [rosbag2_recorder]: Subscribed to topic '/drone/imu'
+[ros2-9] [INFO] [1784797733.989504533] [rosbag2_recorder]: Subscribed to topic '/drone/odom'
+[ros2-9] [INFO] [1784797733.990611636] [rosbag2_recorder]: Subscribed to topic '/drone/gps'
+[ros2-9] [INFO] [1784797733.991899048] [rosbag2_recorder]: Subscribed to topic '/drone/disturbance'
+[ros2-9] [INFO] [1784797733.992097120] [rosbag2_recorder]: Recording...
+[voxel_astar_planner_node.py-3] [INFO] [1784797734.018335661] [voxel_astar_planner_node]: Planner status: waiting_for_map
+[voxel_astar_planner_node.py-3] [INFO] [1784797734.019746895] [voxel_astar_planner_node]: Planner status: map_ready
+[static_obstacle_map_node.py-1] [INFO] [1784797734.023615158] [static_obstacle_map_node]: Loaded deterministic obstacle map with 5 objects
+[experiment_recorder.py-8] [INFO] [1784797734.031582823] [experiment_recorder]: Recording scenario 'five_obstacles' for 30.0 s into /home/tang/drone_sim_ws/artifacts/experiments/five_obstacles
+[local_perception_node.py-2] [INFO] [1784797734.046224085] [local_perception_node]: Perception surface cache contains 1088 points
+[ros2-9] [INFO] [1784797734.095228833] [rosbag2_recorder]: Subscribed to topic '/drone/local_points'
+[ros2-9] [INFO] [1784797734.096002228] [rosbag2_recorder]: Subscribed to topic '/drone/planner_status'
+[ros2-9] [INFO] [1784797734.096778474] [rosbag2_recorder]: Subscribed to topic '/drone/planned_path'
+[ros2-9] [INFO] [1784797734.097624836] [rosbag2_recorder]: Subscribed to topic '/map/obstacles'
+[INFO] [position_controller_node-10]: process started with pid [45832]
+[INFO] [waypoint_mission_node.py-11]: process started with pid [45834]
+[position_controller_node-10] [INFO] [1784797734.802613246] [position_controller_node]: Model-based controller ready at 100.0 Hz; auto takeoff disabled to (0.00, 0.00, 1.50)
+[ros2-9] [INFO] [1784797734.815314824] [rosbag2_recorder]: Subscribed to topic '/drone/reference'
+[waypoint_mission_node.py-11] [INFO] [1784797735.339001668] [waypoint_mission_node]: Loaded 2 mission waypoints
+[ros2-9] [INFO] [1784797735.425003671] [rosbag2_recorder]: Subscribed to topic '/drone/mission_status'
+[ros2-9] [INFO] [1784797735.425047035] [rosbag2_recorder]: All requested topics are subscribed. Stopping discovery...
+[voxel_astar_planner_node.py-3] [INFO] [1784797737.004602431] [voxel_astar_planner_node]: Planner status: success;points=2;expanded=6;seconds=0.0005
+[position_controller_node-10] [INFO] [1784797737.004865538] [position_controller_node]: New goal: (0.00, 0.00, 1.50), yaw 0.00
+[voxel_astar_planner_node.py-3] [INFO] [1784797738.586755543] [voxel_astar_planner_node]: Planner status: goal_reached
+[quadrotor_dynamics_node-4] [INFO] [1784797738.787344834] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.5 Hz, state/TF 95.1 Hz, path 4.6 Hz
+[waypoint_mission_node.py-11] [INFO] [1784797739.328194131] [waypoint_mission_node]: Reached waypoint 1/2
+[voxel_astar_planner_node.py-3] [INFO] [1784797740.096361601] [voxel_astar_planner_node]: Planner status: success;points=8;expanded=728;seconds=0.0904
+[position_controller_node-10] [INFO] [1784797740.096816632] [position_controller_node]: New goal: (0.00, 0.00, 2.25), yaw 0.00
+[position_controller_node-10] [INFO] [1784797740.803840319] [position_controller_node]: New goal: (0.25, 0.00, 2.50), yaw 0.00
+[position_controller_node-10] [INFO] [1784797741.883642481] [position_controller_node]: New goal: (1.25, 0.00, 2.75), yaw 0.00
+[position_controller_node-10] [INFO] [1784797743.003896056] [position_controller_node]: New goal: (4.00, 0.00, 2.75), yaw 0.00
+[quadrotor_dynamics_node-4] [INFO] [1784797743.790995132] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.5 Hz, state/TF 95.3 Hz, path 4.8 Hz
+[position_controller_node-10] [INFO] [1784797744.303694006] [position_controller_node]: New goal: (4.75, 0.00, 2.50), yaw 0.00
+[position_controller_node-10] [INFO] [1784797746.103490507] [position_controller_node]: New goal: (5.00, 0.00, 2.25), yaw 0.00
+[position_controller_node-10] [INFO] [1784797747.153466771] [position_controller_node]: New goal: (5.00, 0.00, 1.50), yaw 0.00
+[voxel_astar_planner_node.py-3] [INFO] [1784797748.454347161] [voxel_astar_planner_node]: Planner status: goal_reached
+[quadrotor_dynamics_node-4] [INFO] [1784797748.794546007] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.5 Hz, state/TF 95.1 Hz, path 4.8 Hz
+[waypoint_mission_node.py-11] [INFO] [1784797749.527682839] [waypoint_mission_node]: Reached waypoint 2/2
+[waypoint_mission_node.py-11] [INFO] [1784797749.528026578] [waypoint_mission_node]: Waypoint mission completed
+[quadrotor_dynamics_node-4] [INFO] [1784797752.260574491] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.5 Hz, state/TF 95.3 Hz, path 4.8 Hz
+[quadrotor_dynamics_node-4] [INFO] [1784797757.263738654] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.5 Hz, state/TF 95.1 Hz, path 4.8 Hz
+[quadrotor_dynamics_node-4] [INFO] [1784797762.267193254] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.5 Hz, state/TF 95.3 Hz, path 4.6 Hz
+[experiment_recorder.py-8] [INFO] [1784797763.843449249] [experiment_recorder]: EXPERIMENT_COMPLETE {"scenario": "five_obstacles", "samples": 2858, "duration_s": 30.030288585000562, "final_position_error_m": 0.024671711824514154, "steady_state_error_m": 0.01894317683935324, "rms_position_error_m": 0.6954783832067358, "maximum_position_error_m": 3.1826202947041358, "arrival_time_s": 4.199182044000736, "maximum_altitude_overshoot_m": 1.2823874846897123, "path_length_m": 77.89528991043012, "maximum_speed_mps": 2.407069282178097, "maximum_tilt_deg": 14.945063872536572, "rpm_min": 0.0, "rpm_max": 13719.813735473144, "rpm_saturation_ratio": 0.0, "mission_status": "completed;index=1;count=2", "planner_status": "goal_reached", "fault_status": "{\"active\": false, \"dropped\": 0, \"elapsed\": 30.037698, \"enabled\": false, \"mode\": \"none\", \"modified\": 0, \"queued\": 0, \"received\": 2778, \"target_motor\": 0}", "maximum_disturbance_force_n": 0.0, "disturbance_peak_error_m": null, "disturbance_recovery_time_s": null, "minimum_obstacle_clearance_m": 0.4195735444648539, "required_obstacle_clearance_m": 0.3, "planned_path_length_m": 6.803701437806841, "maximum_local_point_count": 853, "mean_local_point_count": 284.21623512946115, "sensor_position_noise_mean_m": [-0.00015844415130935398, 2.330686459611748e-05, -7.440657914349938e-05], "sensor_position_noise_stddev_m": [0.010126845165379674, 0.01013874059657212, 0.01486885126896794], "sensor_position_noise_rms_m": 0.011922820919632574}
+[INFO] [experiment_recorder.py-8]: process has finished cleanly [pid 45734]
+[INFO] [waypoint_mission_node.py-11]: sending signal 'SIGINT' to process[waypoint_mission_node.py-11]
+[INFO] [position_controller_node-10]: sending signal 'SIGINT' to process[position_controller_node-10]
+[INFO] [ros2-9]: sending signal 'SIGINT' to process[ros2-9]
+[INFO] [drone_marker_node.py-7]: sending signal 'SIGINT' to process[drone_marker_node.py-7]
+[INFO] [sensor_simulator_node-6]: sending signal 'SIGINT' to process[sensor_simulator_node-6]
+[INFO] [fault_injector_node.py-5]: sending signal 'SIGINT' to process[fault_injector_node.py-5]
+[INFO] [quadrotor_dynamics_node-4]: sending signal 'SIGINT' to process[quadrotor_dynamics_node-4]
+[INFO] [voxel_astar_planner_node.py-3]: sending signal 'SIGINT' to process[voxel_astar_planner_node.py-3]
+[INFO] [local_perception_node.py-2]: sending signal 'SIGINT' to process[local_perception_node.py-2]
+[INFO] [static_obstacle_map_node.py-1]: sending signal 'SIGINT' to process[static_obstacle_map_node.py-1]
+[position_controller_node-10] [INFO] [1784797764.046542346] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2-9] [INFO] [1784797764.047403255] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[sensor_simulator_node-6] [INFO] [1784797764.048488427] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2-9] [INFO] [1784797764.048741728] [rosbag2_recorder]: Event publisher thread: Exiting
+[ros2-9] [INFO] [1784797764.048856000] [rosbag2_recorder]: Recording stopped
+[quadrotor_dynamics_node-4] [INFO] [1784797764.050316938] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [position_controller_node-10]: process has finished cleanly [pid 45832]
+[INFO] [sensor_simulator_node-6]: process has finished cleanly [pid 45730]
+[INFO] [quadrotor_dynamics_node-4]: process has finished cleanly [pid 45726]
+[INFO] [fault_injector_node.py-5]: process has finished cleanly [pid 45728]
+[INFO] [ros2-9]: process has finished cleanly [pid 45736]
+[INFO] [voxel_astar_planner_node.py-3]: process has finished cleanly [pid 45724]
+[INFO] [static_obstacle_map_node.py-1]: process has finished cleanly [pid 45720]
+[INFO] [waypoint_mission_node.py-11]: process has finished cleanly [pid 45834]
+[INFO] [local_perception_node.py-2]: process has finished cleanly [pid 45722]
+[INFO] [drone_marker_node.py-7]: process has finished cleanly [pid 45732]

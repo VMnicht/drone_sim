@@ -1,0 +1,80 @@
+mode_panel:
+  panel_bind_address: 127.0.0.1
+  panel_port: 8060
+  panel_maximum_request_bytes: 1048576
+  panel_maximum_config_bytes: 262144
+  panel_log_tail_lines: 180
+  panel_maximum_results: 30
+  panel_maximum_duration_seconds: 3600.0
+  panel_sigint_timeout_seconds: 8.0
+  panel_sigterm_timeout_seconds: 3.0
+  panel_startup_grace_seconds: 0.5
+  panel_run_root: artifacts/panel_runs
+  panel_log_root: artifacts/panel_logs
+  panel_backup_root: artifacts/panel_yaml_backups
+  panel_ground_station_url: http://127.0.0.1:8080
+  panel_verify_yaml_on_save: true
+  panel_editable_configs:
+    - model.yaml
+    - controller.yaml
+    - dynamics.yaml
+    - sensors.yaml
+    - trajectory.yaml
+    - map.yaml
+    - perception.yaml
+    - planner.yaml
+    - faults.yaml
+    - fleet.yaml
+    - visualization.yaml
+    - ground_station.yaml
+    - interfaces.yaml
+    - launch.yaml
+    - evaluation.yaml
+    - sweep.yaml
+    - tools.yaml
+    - mission_hover.yaml
+    - mission_target.yaml
+    - mission_square.yaml
+    - mission_circle.yaml
+    - mission_figure_eight.yaml
+    - mission_wind_gust.yaml
+    - mission_sensor_noise.yaml
+    - mission_fault_motor.yaml
+    - mission_five_obstacles.yaml
+    - mission_narrow_passage.yaml
+    - mission_perception_replan.yaml
+    - mode_panel.yaml
+  scenario_descriptions:
+    hover:
+      name: 悬停
+      description: 自动起飞到 1.5 m 并稳定悬停
+    target:
+      name: 目标点
+      description: "飞往 (2, 1, 1.5) 并悬停"
+    square:
+      name: 方形航点
+      description: 连续完成五个 YAML 航点
+    circle:
+      name: 圆轨迹
+      description: 解析位置/速度/加速度前馈
+    figure_eight:
+      name: 八字轨迹
+      description: Gerono 八字连续参考
+    wind_gust:
+      name: 阵风恢复
+      description: 3.04 N 阵风与恢复曲线
+    sensor_noise:
+      name: 传感器噪声
+      description: 增强噪声闭环与统计
+    fault_motor:
+      name: 电机故障
+      description: 0 号电机效率衰减与恢复
+    five_obstacles:
+      name: 五障碍绕行
+      description: 点云、体素与 3D A*
+    narrow_passage:
+      name: 狭窄通道
+      description: 安全膨胀与窄通道跟踪
+    perception_replan:
+      name: 局部重规划
+      description: 局部感知触发路径更新

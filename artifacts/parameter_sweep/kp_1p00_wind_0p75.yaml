@@ -1,0 +1,13 @@
+position_controller_node:
+  ros__parameters:
+    position_gain:
+    - 3.0
+    - 3.0
+    - 6.0
+quadrotor_dynamics_node:
+  ros__parameters:
+    disturbance_amplitude_force_world:
+    - 1.5
+    - 0.375
+    - 0.0
+    disturbance_random_seed: 41

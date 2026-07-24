@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 project(drone_planner)
 find_package(ament_cmake REQUIRED)
+install(PROGRAMS scripts/voxel_astar_planner_node.py DESTINATION lib/${PROJECT_NAME})
+install(FILES scripts/path_progress.py DESTINATION lib/${PROJECT_NAME})
+if(BUILD_TESTING)
+  find_package(ament_cmake_pytest REQUIRED)
+  ament_add_pytest_test(test_path_progress test/test_path_progress.py)
+endif()
 ament_package()
-

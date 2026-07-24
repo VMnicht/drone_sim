@@ -1,0 +1,18 @@
+analytic_trajectory_node:
+  ros__parameters:
+    # Modes: hold, circle, figure_eight.
+    trajectory_type: circle
+    trajectory_center: [0.0, 0.0, 1.5]
+    trajectory_radius_x: 1.0
+    trajectory_radius_y: 1.0
+    trajectory_period: 8.0
+    trajectory_phase: 0.0
+    trajectory_fixed_yaw: 0.0
+    trajectory_face_velocity: false
+    trajectory_minimum_yaw_speed: 1.0e-6
+    trajectory_update_frequency: 50.0
+    trajectory_start_delay: 1.0
+    trajectory_preview_points: 200
+    trajectory_preview_horizon: 8.0
+    trajectory_qos_depth: 10
+    trajectory_path_qos_depth: 1

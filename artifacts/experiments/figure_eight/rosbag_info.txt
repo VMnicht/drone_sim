@@ -1,0 +1,18 @@
+
+Files:             rosbag_20260723T090739Z_0.db3
+Bag size:          6.2 MiB
+Storage id:        sqlite3
+Duration:          24.288720822s
+Start:             Jul 23 2026 17:07:40.016884037 (1784797660.016884037)
+End:               Jul 23 2026 17:08:04.305604859 (1784797684.305604859)
+Messages:          13997
+Topic information: Topic: /drone/disturbance | Type: geometry_msgs/msg/WrenchStamped | Count: 2320 | Serialization Format: cdr
+                   Topic: /drone/gps | Type: sensor_msgs/msg/NavSatFix | Count: 115 | Serialization Format: cdr
+                   Topic: /drone/odom | Type: nav_msgs/msg/Odometry | Count: 2304 | Serialization Format: cdr
+                   Topic: /drone/imu | Type: sensor_msgs/msg/Imu | Count: 2304 | Serialization Format: cdr
+                   Topic: /drone/reference | Type: geometry_msgs/msg/PoseStamped | Count: 2148 | Serialization Format: cdr
+                   Topic: /drone/motor_rpm | Type: drone_msgs/msg/MotorRPM | Count: 2320 | Serialization Format: cdr
+                   Topic: /drone/path | Type: nav_msgs/msg/Path | Count: 116 | Serialization Format: cdr
+                   Topic: /drone/truth/odom | Type: nav_msgs/msg/Odometry | Count: 2321 | Serialization Format: cdr
+                   Topic: /fault/status | Type: std_msgs/msg/String | Count: 49 | Serialization Format: cdr
+

@@ -1,0 +1,20 @@
+local_perception_node:
+  ros__parameters:
+    perception_update_frequency: 10.0
+    perception_minimum_range: 0.15
+    perception_maximum_range: 6.0
+    perception_horizontal_fov_degrees: 270.0
+    perception_vertical_fov_degrees: 120.0
+    surface_sample_resolution: 0.18
+    minimum_cylinder_angular_samples: 12
+    occlusion_angular_bin_degrees: 1.5
+    point_range_noise_stddev: 0.01
+    point_dropout_probability: 0.01
+    perception_random_seed: 31
+    voxel_resolution: 0.25
+    voxel_persistence_seconds: 0.8
+    voxel_minimum_hits: 1
+    voxel_maximum_cells: 20000
+    perception_input_qos_depth: 10
+    perception_output_qos_depth: 1
+    point_color: [0.20, 0.80, 1.00, 0.75]

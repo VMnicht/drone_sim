@@ -1,0 +1,44 @@
+# Offline acceptance and delivery settings. These values are consumed by
+# scripts/verify_experiments.py, scripts/generate_demo_video.py and the report
+# generator; they are not ROS node parameters.
+acceptance:
+  maximum_final_position_error_m: 0.30
+  maximum_steady_state_error_m: 0.10
+  maximum_trajectory_rms_error_m: 0.65
+  maximum_rpm_saturation_ratio: 0.0
+  maximum_tilt_degrees: 30.0
+  minimum_obstacle_clearance_m: 0.30
+  minimum_local_point_count: 1
+  minimum_disturbance_force_n: 0.1
+  maximum_disturbance_recovery_time_s: 5.0
+  steady_state_scenarios: [hover, target, square, wind_gust, sensor_noise, fault_motor]
+  trajectory_scenarios: [circle, figure_eight]
+  avoidance_scenarios: [five_obstacles, narrow_passage, perception_replan]
+  disturbance_scenarios: [wind_gust]
+  fault_scenarios: [fault_motor]
+  required_completed_scenarios: [target, square, five_obstacles, narrow_passage, perception_replan]
+
+video:
+  width: 1280
+  height: 720
+  frames_per_second: 30
+  title_hold_seconds: 5.0
+  scenario_title_hold_seconds: 2.0
+  result_hold_seconds: 8.0
+  scenario_duration_seconds:
+    hover: 8.0
+    target: 8.0
+    square: 10.0
+    circle: 12.0
+    figure_eight: 12.0
+    wind_gust: 12.0
+    sensor_noise: 8.0
+    fault_motor: 10.0
+    five_obstacles: 12.0
+    narrow_passage: 12.0
+    perception_replan: 12.0
+  minimum_duration_seconds: 60.0
+  maximum_duration_seconds: 180.0
+  rpm_bar_headroom_ratio: 1.0
+  plot_margin_fraction: 0.12
+  minimum_plot_span_m: 0.8

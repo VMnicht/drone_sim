@@ -1,0 +1,17 @@
+quadrotor_dynamics_node:
+  ros__parameters:
+    disturbance_enabled: true
+    disturbance_mode: gust
+    disturbance_amplitude_force_world: [2.0, 0.5, 0.0]
+    disturbance_start_time: 5.0
+    disturbance_duration: 2.0
+
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: true
+
+experiment_recorder:
+  ros__parameters:
+    scenario: wind_gust
+    duration: 14.0
+    output_dir: artifacts/experiments/wind_gust

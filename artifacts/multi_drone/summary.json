@@ -1,0 +1,9 @@
+{
+  "active_drones": 3,
+  "configured_drones": 3,
+  "current_minimum_distance": 1.002324,
+  "minimum_observed_distance": 0.785976,
+  "required_minimum_distance": 0.75,
+  "safe": true,
+  "violation_count": 0
+}

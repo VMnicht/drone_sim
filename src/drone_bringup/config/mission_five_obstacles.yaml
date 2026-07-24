@@ -1,0 +1,17 @@
+waypoint_mission_node:
+  ros__parameters:
+    waypoints: [0.0, 0.0, 1.5, 0.0, 5.0, 0.0, 1.5, 0.0]
+    arrival_tolerance: 0.18
+    dwell_time: 0.8
+    start_delay: 1.0
+    goal_topic: /drone/raw_goal
+
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: false
+
+experiment_recorder:
+  ros__parameters:
+    scenario: five_obstacles
+    duration: 30.0
+    output_dir: artifacts/experiments/five_obstacles

@@ -1,0 +1,122 @@
+schema_version: 1
+scenario: square
+started_at_utc: '2026-07-23T09:06:57.678307+00:00'
+command:
+- ros2
+- launch
+- drone_bringup
+- experiment.launch.py
+- scenario:=square
+- use_rviz:=false
+- output_dir:=/home/tang/drone_sim_ws/artifacts/experiments/square
+- record_rosbag:=true
+- rosbag_output_dir:=/home/tang/drone_sim_ws/artifacts/experiments/square/rosbag_20260723T090657Z
+git_commit: 8bb0e9afeb77f467ebb4dc213f0968dc84da16a6
+git_status: "M .github/workflows/ci.yml\n M README.md\n M ai_usage.md\n M artifacts/experiments/hover/attitude.png\n\
+  \ M artifacts/experiments/hover/experiment_summary.png\n M artifacts/experiments/hover/motor_rpm.png\n\
+  \ M artifacts/experiments/hover/position_error.png\n M artifacts/experiments/hover/position_tracking.png\n\
+  \ M artifacts/experiments/hover/reference_history.csv\n M artifacts/experiments/hover/summary.json\n\
+  \ M artifacts/experiments/hover/telemetry.csv\n M artifacts/experiments/hover/trajectory_3d.png\n\
+  \ M artifacts/experiments/square/attitude.png\n M artifacts/experiments/square/experiment_summary.png\n\
+  \ M artifacts/experiments/square/motor_rpm.png\n M artifacts/experiments/square/position_error.png\n\
+  \ M artifacts/experiments/square/position_tracking.png\n M artifacts/experiments/square/reference_history.csv\n\
+  \ M artifacts/experiments/square/summary.json\n M artifacts/experiments/square/telemetry.csv\n\
+  \ M artifacts/experiments/square/trajectory_3d.png\n M artifacts/experiments/target/attitude.png\n\
+  \ M artifacts/experiments/target/experiment_summary.png\n M artifacts/experiments/target/motor_rpm.png\n\
+  \ M artifacts/experiments/target/position_error.png\n M artifacts/experiments/target/position_tracking.png\n\
+  \ M artifacts/experiments/target/reference_history.csv\n M artifacts/experiments/target/summary.json\n\
+  \ M artifacts/experiments/target/telemetry.csv\n M artifacts/experiments/target/trajectory_3d.png\n\
+  \ M docs/controller.md\n M docs/dynamics.md\n M output/pdf/drone_sim_report.pdf\n\
+  \ M output/video/drone_demo.mp4\n M output/video/drone_demo_contact_sheet.jpg\n\
+  \ M report/README.md\n M scripts/generate_demo_video.py\n M scripts/generate_report.py\n\
+  \ M scripts/verify_experiments.py\n M src/drone_bringup/CMakeLists.txt\n M src/drone_bringup/config/controller.yaml\n\
+  \ M src/drone_bringup/config/dynamics.yaml\n M src/drone_bringup/config/mission_square.yaml\n\
+  \ M src/drone_bringup/config/mission_target.yaml\n M src/drone_bringup/launch/dynamics.launch.py\n\
+  \ M src/drone_bringup/launch/experiment.launch.py\n M src/drone_bringup/launch/hover.launch.py\n\
+  \ M src/drone_bringup/package.xml\n M src/drone_bringup/rviz/hover.rviz\n M src/drone_bringup/test/test_hover_launch.py\n\
+  \ M src/drone_controller/src/position_controller_node.cpp\n M src/drone_core/CMakeLists.txt\n\
+  \ M src/drone_dynamics/src/quadrotor_dynamics_node.cpp\n M src/drone_map/CMakeLists.txt\n\
+  \ M src/drone_map/package.xml\n M src/drone_msgs/CMakeLists.txt\n M src/drone_planner/CMakeLists.txt\n\
+  \ M src/drone_planner/package.xml\n M src/drone_tools/package.xml\n M src/drone_tools/scripts/experiment_recorder.py\n\
+  \ M src/drone_tools/scripts/waypoint_mission_node.py\n M src/drone_visualization/scripts/drone_marker_node.py\n\
+  \ M \"\\344\\273\\273\\345\\212\\241\\346\\226\\207\\346\\241\\243.md\"\n M \"\\\
+  345\\267\\245\\347\\250\\213\\350\\247\\204\\345\\210\\222.md\"\n?? artifacts/experiments/circle/\n\
+  ?? artifacts/experiments/fault_motor/\n?? artifacts/experiments/figure_eight/\n\
+  ?? artifacts/experiments/five_obstacles/\n?? artifacts/experiments/hover/environment_metrics.png\n\
+  ?? artifacts/experiments/hover/metadata.yaml\n?? artifacts/experiments/hover/parameter_snapshot.yaml\n\
+  ?? artifacts/experiments/hover/rosbag_20260715T155836Z/\n?? artifacts/experiments/hover/rosbag_20260723T082746Z/\n\
+  ?? artifacts/experiments/hover/rosbag_20260723T085327Z/\n?? artifacts/experiments/hover/rosbag_20260723T090626Z/\n\
+  ?? artifacts/experiments/hover/rosbag_info.txt\n?? artifacts/experiments/hover/run.log\n\
+  ?? artifacts/experiments/narrow_passage/\n?? artifacts/experiments/perception_replan/\n\
+  ?? artifacts/experiments/sensor_noise/\n?? artifacts/experiments/square/environment_metrics.png\n\
+  ?? artifacts/experiments/square/metadata.yaml\n?? artifacts/experiments/square/parameter_snapshot.yaml\n\
+  ?? artifacts/experiments/square/rosbag_20260715T155908Z/\n?? artifacts/experiments/square/rosbag_20260723T082819Z/\n\
+  ?? artifacts/experiments/square/rosbag_20260723T085400Z/\n?? artifacts/experiments/square/rosbag_info.txt\n\
+  ?? artifacts/experiments/square/run.log\n?? artifacts/experiments/target/environment_metrics.png\n\
+  ?? artifacts/experiments/target/metadata.yaml\n?? artifacts/experiments/target/parameter_snapshot.yaml\n\
+  ?? artifacts/experiments/target/rosbag_20260715T155850Z/\n?? artifacts/experiments/target/rosbag_20260723T082800Z/\n\
+  ?? artifacts/experiments/target/rosbag_20260723T085342Z/\n?? artifacts/experiments/target/rosbag_20260723T090640Z/\n\
+  ?? artifacts/experiments/target/rosbag_info.txt\n?? artifacts/experiments/target/run.log\n\
+  ?? artifacts/experiments/wind_gust/\n?? artifacts/multi_drone/\n?? artifacts/panel_logs/\n\
+  ?? artifacts/panel_runs/\n?? artifacts/panel_yaml_backups/\n?? artifacts/parameter_sweep/\n\
+  ?? artifacts/performance/\n?? artifacts/performance_baseline.log\n?? artifacts/performance_long_baseline.log\n\
+  ?? artifacts/replay/\n?? artifacts/timing_diagnostics.log\n?? artifacts/timing_diagnostics_v2.log\n\
+  ?? docs/completion_audit.md\n?? docs/parameters.md\n?? docs/reference_comparison.md\n\
+  ?? modes/\n?? scripts/mode_panel.py\n?? scripts/profile_runtime.sh\n?? scripts/replay_scenario.py\n\
+  ?? scripts/run_all_experiments.py\n?? scripts/run_parameter_sweep.py\n?? scripts/test_ground_station_api.py\n\
+  ?? scripts/test_mode_panel.py\n?? scripts/test_multi_drone.py\n?? scripts/verify_experiment_evidence.py\n\
+  ?? scripts/verify_yaml_parameters.py\n?? src/drone_bringup/config/evaluation.yaml\n\
+  ?? src/drone_bringup/config/faults.yaml\n?? src/drone_bringup/config/fleet.yaml\n\
+  ?? src/drone_bringup/config/ground_station.yaml\n?? src/drone_bringup/config/interfaces.yaml\n\
+  ?? src/drone_bringup/config/launch.yaml\n?? src/drone_bringup/config/map.yaml\n\
+  ?? src/drone_bringup/config/mission_circle.yaml\n?? src/drone_bringup/config/mission_fault_motor.yaml\n\
+  ?? src/drone_bringup/config/mission_figure_eight.yaml\n?? src/drone_bringup/config/mission_five_obstacles.yaml\n\
+  ?? src/drone_bringup/config/mission_hover.yaml\n?? src/drone_bringup/config/mission_narrow_passage.yaml\n\
+  ?? src/drone_bringup/config/mission_perception_replan.yaml\n?? src/drone_bringup/config/mission_sensor_noise.yaml\n\
+  ?? src/drone_bringup/config/mission_wind_gust.yaml\n?? src/drone_bringup/config/mode_panel.yaml\n\
+  ?? src/drone_bringup/config/model.yaml\n?? src/drone_bringup/config/perception.yaml\n\
+  ?? src/drone_bringup/config/planner.yaml\n?? src/drone_bringup/config/sensors.yaml\n\
+  ?? src/drone_bringup/config/sweep.yaml\n?? src/drone_bringup/config/tools.yaml\n\
+  ?? src/drone_bringup/config/trajectory.yaml\n?? src/drone_bringup/config/visualization.yaml\n\
+  ?? src/drone_bringup/launch/ground_station.launch.py\n?? src/drone_bringup/launch/multi_drone.launch.py\n\
+  ?? src/drone_bringup/rviz/multi_drone.rviz\n?? src/drone_bringup/test/test_mode_panel.py\n\
+  ?? src/drone_bringup/test/test_yaml_parameters.py\n?? src/drone_core/include/drone_core/disturbance_model.hpp\n\
+  ?? src/drone_core/include/drone_core/sensor_noise_model.hpp\n?? src/drone_core/include/drone_core/trajectory_generator.hpp\n\
+  ?? src/drone_core/src/disturbance_model.cpp\n?? src/drone_core/src/sensor_noise_model.cpp\n\
+  ?? src/drone_core/src/trajectory_generator.cpp\n?? src/drone_core/test/test_simulation_models.cpp\n\
+  ?? src/drone_faults/\n?? src/drone_fleet/\n?? src/drone_ground_station/\n?? src/drone_map/scripts/\n\
+  ?? src/drone_msgs/msg/TrajectoryPoint.msg\n?? src/drone_perception/\n?? src/drone_planner/scripts/\n\
+  ?? src/drone_planner/test/\n?? src/drone_sensors/\n?? src/drone_trajectory/\n??\
+  \ start_hover.sh\n?? start_sim.sh"
+ros_distro: humble
+rosbag_directory: /home/tang/drone_sim_ws/artifacts/experiments/square/rosbag_20260723T090657Z
+config_sha256:
+  controller.yaml: bd3d4169660f1762b416496261e79ba9ad54bb1400062631cf720b6434e49235
+  dynamics.yaml: 37d38567c46c9ddb93891e1fed9e30df160ffd26d2d365697bde8358ac2ccb00
+  evaluation.yaml: 6614e25422a5297709cfd56d8fffaffe63a7e4d5dd010880bbb101077e1695bd
+  faults.yaml: 6462a44b1744771ceba6581ecbb6368a4e9db48b604865da9ba8bb9e93a8b7c8
+  fleet.yaml: 54e62d0ab92a7561515402f4ebc6e5bf70363fc9b7ece274e8b294fbfecb3cf5
+  ground_station.yaml: f79151ad1c12b14f16629dda62c6fdf0cdfed7cd70552ac300753f4ebc633692
+  interfaces.yaml: ec2a1a0fd7410b84d7c1a9d69d86cd63a89660686f4204714f28e47471195eb9
+  launch.yaml: 68cb6c9ba41a4567ec875eba12f7dafbe102f1318f50b841c50fe6e2582d5948
+  map.yaml: b861ceee2c77ba017e02b6764d65220ca001d0fd52349c5f6c50c134c8d8d375
+  mission_circle.yaml: fcd6eb97ca5ab4aa4971ab8b32dcc1f3d496e92cb79feeb5943096f3023d0498
+  mission_fault_motor.yaml: 15309bbf2a7e41c1881634e88ae1107c94e6b6792e3ef396e7b35b076ef84c25
+  mission_figure_eight.yaml: 82e35a0088bd500bf09ddcd99422e65d78c8f7767e093562e47b4e3d890fbab2
+  mission_five_obstacles.yaml: 4cf367d165285f8c996255eec62057d0b0038272c4effc82e2c99e15b4502cbf
+  mission_hover.yaml: ec06f0bd047889a0b880d05a80df79712eb57f2dfbb36954730a063e2ec238af
+  mission_narrow_passage.yaml: fad10be0947ad473ca0356246e0f67c0f9f63a4cc6cdde0b24c2e7d9ab166b41
+  mission_perception_replan.yaml: ed89eb8f850191f03eb0478f6c1a3826f60ee12daf6e239318e0215a9cddbf28
+  mission_sensor_noise.yaml: 751af4516489cbe827462d9f6faeeded15fefd21cb97eed7746617a94cd56f5c
+  mission_square.yaml: 17006ec0c30afc36550c4fc84298997ecdf483416a66cada85d406d1ff6e09c5
+  mission_target.yaml: 1253d4536024630f412c4a8f1933f7609c69b7efc819e89ebfe7bdbbda6c0829
+  mission_wind_gust.yaml: cb17aea8feebfc04221d467ea77c1b6233a1dc7e8263aee7539e9c94d373772d
+  mode_panel.yaml: 1ff404c383294648a7cc8466c5ba835af8b659ca5c8b7c9f9e4a16d647bfd05c
+  model.yaml: 4721e384111f38c317e93fbc8ed87a4506dc8950b260ac653cb168690d0642fe
+  perception.yaml: 96758e692f117790437c37506d42909142d4c8a8f13f1bc3912295271aadbdab
+  planner.yaml: c874c8f5ea1e0624ea3fb2cdbf9e85f8a2be14322d1f27e00c2e9f1e71ae5358
+  sensors.yaml: 9b124895c8a6c79546d8333aee836754f67b94b46bf1efc4b40b4994f54e8aae
+  sweep.yaml: 977ada57b56a24163a3a01ad4eb86af320e36ce9e0f8ad7ab72d3604f5aec036
+  tools.yaml: fe89416c2ed340ae49b8f26f67e64568cee8eec2065fbc7eb71d04118768c94a
+  trajectory.yaml: fcbb3eb02196d624926def8baf6a6d9743c6b44e8fe001a563b957164f4ea57a
+  visualization.yaml: 725653e86f20bb767f15dc65e409050761513fe5960490f63d67f5eadf41a234

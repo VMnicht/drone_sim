@@ -1,0 +1,26 @@
+voxel_astar_planner_node:
+  ros__parameters:
+    planning_enabled: true
+    map_minimum: [-1.0, -3.0, 0.25]
+    map_maximum: [6.0, 3.0, 3.0]
+    planner_resolution: 0.25
+    planner_connectivity: 26
+    drone_collision_radius: 0.18
+    # Reference-path clearance beyond the 0.18 m vehicle radius.  The extra
+    # planning margin compensates closed-loop corner cutting so that the
+    # measured body-surface clearance remains above the 0.30 m acceptance line.
+    planner_safety_margin: 0.50
+    # Keep this aligned with map_minimum.z + N * planner_resolution.
+    minimum_flight_height: 0.25
+    maximum_search_nodes: 120000
+    planner_timeout: 1.5
+    planner_replan_frequency: 1.0
+    path_follower_frequency: 20.0
+    path_lookahead_distance: 0.18
+    goal_tolerance: 0.18
+    planner_goal_change_tolerance: 0.01
+    line_check_step: 0.10
+    use_local_pointcloud: true
+    local_point_inflation_radius: 0.05
+    planner_input_qos_depth: 20
+    planner_output_qos_depth: 1

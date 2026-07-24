@@ -1,0 +1,9 @@
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: true
+
+experiment_recorder:
+  ros__parameters:
+    scenario: hover
+    duration: 12.0
+    output_dir: artifacts/experiments/hover

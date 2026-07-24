@@ -1,0 +1,27 @@
+local_perception_node:
+  ros__parameters:
+    perception_horizontal_fov_degrees: 180.0
+    perception_maximum_range: 4.0
+
+voxel_astar_planner_node:
+  ros__parameters:
+    use_local_pointcloud: true
+    planner_replan_frequency: 2.0
+
+waypoint_mission_node:
+  ros__parameters:
+    waypoints: [0.0, 0.0, 1.5, 0.0, 5.0, 0.5, 1.5, 0.0]
+    arrival_tolerance: 0.18
+    dwell_time: 0.8
+    start_delay: 1.0
+    goal_topic: /drone/raw_goal
+
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: false
+
+experiment_recorder:
+  ros__parameters:
+    scenario: perception_replan
+    duration: 32.0
+    output_dir: artifacts/experiments/perception_replan

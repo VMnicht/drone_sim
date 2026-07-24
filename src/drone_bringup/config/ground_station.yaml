@@ -1,0 +1,20 @@
+web_ground_station_node:
+  ros__parameters:
+    ground_station_bind_address: 127.0.0.1
+    ground_station_port: 8080
+    ground_station_command_frequency: 20.0
+    ground_station_stale_timeout: 1.0
+    ground_station_maximum_request_bytes: 4096
+    ground_station_drone_ids: [drone]
+    ground_station_odometry_topics: [/drone/odom]
+    ground_station_goal_topics: [/drone/goal]
+    ground_station_reset_services: [/drone/reset]
+    fault_enable_service: /fault/enable
+    disturbance_enable_service: /drone/disturbance/enable
+    fault_status_topic: /fault/status
+    planner_status_topic: /drone/planner_status
+    ground_station_qos_depth: 20
+    ground_station_goal_minimum: [-20.0, -20.0, 0.0]
+    ground_station_goal_maximum: [20.0, 20.0, 10.0]
+    ground_station_results_root: artifacts/experiments
+    ground_station_maximum_results: 20

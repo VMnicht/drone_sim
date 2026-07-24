@@ -1,0 +1,30 @@
+fleet:
+  drone_ids: [drone_0, drone_1, drone_2]
+  # Initial x/y/z and analytic-trajectory centers, grouped per drone.
+  initial_positions: [
+    0.0, -1.5, 0.0,
+    0.0,  0.0, 0.0,
+    0.0,  1.5, 0.0
+  ]
+  trajectory_centers: [
+    0.0, -1.5, 1.5,
+    0.0,  0.0, 1.5,
+    0.0,  1.5, 1.5
+  ]
+  trajectory_phases: [0.0, 2.0943951024, 4.1887902048]
+  use_rviz: true
+  rviz_start_delay: 1.0
+
+fleet_monitor_node:
+  ros__parameters:
+    drone_ids: [drone_0, drone_1, drone_2]
+    fleet_odometry_topics: [/drone_0/odom, /drone_1/odom, /drone_2/odom]
+    fleet_status_topic: /fleet/status
+    fleet_safety_marker_topic: /fleet/safety_markers
+    fleet_monitor_frequency: 20.0
+    minimum_inter_drone_distance: 0.75
+    fleet_odometry_qos_depth: 20
+    fleet_output_qos_depth: 1
+    safe_line_color: [0.10, 0.90, 0.25, 0.65]
+    unsafe_line_color: [1.00, 0.10, 0.05, 0.95]
+    fleet_line_width: 0.025

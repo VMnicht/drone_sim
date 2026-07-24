@@ -1,0 +1,22 @@
+# Offline parameter-sweep configuration consumed by scripts/run_parameter_sweep.py.
+parameter_sweep:
+  scenario: wind_gust
+  duration: 11.0
+  output_root: artifacts/parameter_sweep
+  position_kp_scales: [0.8, 1.0, 1.2]
+  disturbance_force_scales: [0.75, 1.0, 1.25]
+  metric: disturbance_peak_error_m
+  random_seed: 41
+
+deterministic_replay:
+  scenario: wind_gust
+  duration: 14.0
+  output_root: artifacts/replay
+  metric_absolute_tolerance: 0.08
+  metrics: [
+    final_position_error_m,
+    steady_state_error_m,
+    maximum_disturbance_force_n,
+    disturbance_peak_error_m,
+    disturbance_recovery_time_s
+  ]

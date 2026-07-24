@@ -1,0 +1,46 @@
+hover:
+  use_rviz: true
+  rviz_start_delay: 1.0
+
+experiment:
+  scenarios: [
+    hover,
+    target,
+    square,
+    circle,
+    figure_eight,
+    wind_gust,
+    sensor_noise,
+    fault_motor,
+    five_obstacles,
+    narrow_passage,
+    perception_replan
+  ]
+  scenario: hover
+  use_rviz: false
+  controller_start_delay: 1.0
+  rviz_start_delay: 1.0
+  batch_record_rosbag: true
+  rosbag_topics: [
+    /drone/truth/odom,
+    /drone/odom,
+    /drone/imu,
+    /drone/gps,
+    /drone/motor_rpm,
+    /drone/reference,
+    /drone/path,
+    /drone/disturbance,
+    /drone/planned_path,
+    /drone/planner_status,
+    /drone/local_points,
+    /map/obstacles,
+    /fault/status,
+    /drone/mission_status
+  ]
+
+rviz_environment:
+  QT_AUTO_SCREEN_SCALE_FACTOR: "0"
+  QT_ENABLE_HIGHDPI_SCALING: "0"
+  QT_QPA_PLATFORM: xcb
+  QT_SCALE_FACTOR: "1"
+  QT_SCREEN_SCALE_FACTORS: "1"

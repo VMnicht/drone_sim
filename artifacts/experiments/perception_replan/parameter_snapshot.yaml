@@ -1,0 +1,1041 @@
+controller.yaml:
+  position_controller_node:
+    ros__parameters:
+      angular_rate_gain:
+      - 0.16
+      - 0.16
+      - 0.1
+      attitude_gain:
+      - 0.4
+      - 0.4
+      - 0.25
+      auto_takeoff: true
+      command_qos_depth: 20
+      controller_frequency: 100.0
+      diagnostics_log_throttle_ms: 1000
+      goal_change_position_tolerance: 1.0e-06
+      goal_change_yaw_tolerance: 1.0e-06
+      goal_qos_depth: 10
+      maximum_horizontal_acceleration: 3.0
+      maximum_thrust_to_weight: 2.5
+      maximum_tilt_degrees: 25.0
+      maximum_torque:
+      - 1.0
+      - 1.0
+      - 0.5
+      maximum_vertical_acceleration: 6.0
+      minimum_quaternion_norm: 1.0e-09
+      odometry_qos_depth: 20
+      odometry_timeout: 0.2
+      odometry_timeout_hover_enabled: true
+      position_gain:
+      - 3.0
+      - 3.0
+      - 6.0
+      reference_qos_depth: 1
+      takeoff_position:
+      - 0.0
+      - 0.0
+      - 1.5
+      takeoff_yaw: 0.0
+      trajectory_qos_depth: 10
+      velocity_gain:
+      - 3.5
+      - 3.5
+      - 4.5
+dynamics.yaml:
+  quadrotor_dynamics_node:
+    ros__parameters:
+      angular_damping:
+      - 0.002
+      - 0.002
+      - 0.002
+      command_qos_depth: 20
+      command_timeout: 0.1
+      command_timeout_hover_enabled: true
+      diagnostics_log_throttle_ms: 1000
+      disturbance_amplitude_force_world:
+      - 0.0
+      - 0.0
+      - 0.0
+      disturbance_amplitude_torque_body:
+      - 0.0
+      - 0.0
+      - 0.0
+      disturbance_duration: 0.0
+      disturbance_enabled: false
+      disturbance_force_world:
+      - 1.0
+      - 0.0
+      - 0.0
+      disturbance_frequency: 0.5
+      disturbance_mode: constant
+      disturbance_random_correlation_time: 0.5
+      disturbance_random_seed: 1
+      disturbance_start_time: 0.0
+      disturbance_torque_body:
+      - 0.0
+      - 0.0
+      - 0.0
+      ground_height: 0.0
+      ground_restitution: 0.0
+      initial_angular_velocity:
+      - 0.0
+      - 0.0
+      - 0.0
+      initial_position:
+      - 0.0
+      - 0.0
+      - 0.0
+      initial_rpy:
+      - 0.0
+      - 0.0
+      - 0.0
+      initial_velocity:
+      - 0.0
+      - 0.0
+      - 0.0
+      linear_drag_coefficient: 0.05
+      maximum_path_points: 1200
+      motor_time_constant: 0.03
+      path_publish_frequency: 5.0
+      path_qos_depth: 10
+      path_sample_frequency: 10.0
+      simulation_frequency: 200.0
+      state_publish_frequency: 100.0
+      state_qos_depth: 20
+      timing_diagnostics_frequency: 0.2
+evaluation.yaml:
+  acceptance:
+    avoidance_scenarios:
+    - five_obstacles
+    - narrow_passage
+    - perception_replan
+    disturbance_scenarios:
+    - wind_gust
+    fault_scenarios:
+    - fault_motor
+    maximum_disturbance_recovery_time_s: 5.0
+    maximum_final_position_error_m: 0.3
+    maximum_rpm_saturation_ratio: 0.0
+    maximum_steady_state_error_m: 0.1
+    maximum_tilt_degrees: 30.0
+    maximum_trajectory_rms_error_m: 0.65
+    minimum_disturbance_force_n: 0.1
+    minimum_local_point_count: 1
+    minimum_obstacle_clearance_m: 0.3
+    required_completed_scenarios:
+    - target
+    - square
+    - five_obstacles
+    - narrow_passage
+    - perception_replan
+    steady_state_scenarios:
+    - hover
+    - target
+    - square
+    - wind_gust
+    - sensor_noise
+    - fault_motor
+    trajectory_scenarios:
+    - circle
+    - figure_eight
+  video:
+    frames_per_second: 30
+    height: 720
+    maximum_duration_seconds: 180.0
+    minimum_duration_seconds: 60.0
+    minimum_plot_span_m: 0.8
+    plot_margin_fraction: 0.12
+    result_hold_seconds: 8.0
+    rpm_bar_headroom_ratio: 1.0
+    scenario_duration_seconds:
+      circle: 12.0
+      fault_motor: 10.0
+      figure_eight: 12.0
+      five_obstacles: 12.0
+      hover: 8.0
+      narrow_passage: 12.0
+      perception_replan: 12.0
+      sensor_noise: 8.0
+      square: 10.0
+      target: 8.0
+      wind_gust: 12.0
+    scenario_title_hold_seconds: 2.0
+    title_hold_seconds: 5.0
+    width: 1280
+faults.yaml:
+  fault_injector_node:
+    ros__parameters:
+      fault_command_delay: 0.12
+      fault_dropout_probability: 0.25
+      fault_duration: 2.0
+      fault_enabled: false
+      fault_input_qos_depth: 20
+      fault_mode: none
+      fault_motor_efficiency: 0.65
+      fault_motor_maximum_rpm: 7000.0
+      fault_output_qos_depth: 20
+      fault_random_seed: 47
+      fault_start_time: 5.0
+      fault_status_frequency: 2.0
+      fault_status_qos_depth: 1
+      fault_target_motor: 0
+      fault_update_frequency: 200.0
+fleet.yaml:
+  fleet:
+    drone_ids:
+    - drone_0
+    - drone_1
+    - drone_2
+    initial_positions:
+    - 0.0
+    - -1.5
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 1.5
+    - 0.0
+    rviz_start_delay: 1.0
+    trajectory_centers:
+    - 0.0
+    - -1.5
+    - 1.5
+    - 0.0
+    - 0.0
+    - 1.5
+    - 0.0
+    - 1.5
+    - 1.5
+    trajectory_phases:
+    - 0.0
+    - 2.0943951024
+    - 4.1887902048
+    use_rviz: true
+  fleet_monitor_node:
+    ros__parameters:
+      drone_ids:
+      - drone_0
+      - drone_1
+      - drone_2
+      fleet_line_width: 0.025
+      fleet_monitor_frequency: 20.0
+      fleet_odometry_qos_depth: 20
+      fleet_odometry_topics:
+      - /drone_0/odom
+      - /drone_1/odom
+      - /drone_2/odom
+      fleet_output_qos_depth: 1
+      fleet_safety_marker_topic: /fleet/safety_markers
+      fleet_status_topic: /fleet/status
+      minimum_inter_drone_distance: 0.75
+      safe_line_color:
+      - 0.1
+      - 0.9
+      - 0.25
+      - 0.65
+      unsafe_line_color:
+      - 1.0
+      - 0.1
+      - 0.05
+      - 0.95
+ground_station.yaml:
+  web_ground_station_node:
+    ros__parameters:
+      disturbance_enable_service: /drone/disturbance/enable
+      fault_enable_service: /fault/enable
+      fault_status_topic: /fault/status
+      ground_station_bind_address: 127.0.0.1
+      ground_station_command_frequency: 20.0
+      ground_station_drone_ids:
+      - drone
+      ground_station_goal_maximum:
+      - 20.0
+      - 20.0
+      - 10.0
+      ground_station_goal_minimum:
+      - -20.0
+      - -20.0
+      - 0.0
+      ground_station_goal_topics:
+      - /drone/goal
+      ground_station_maximum_request_bytes: 4096
+      ground_station_maximum_results: 20
+      ground_station_odometry_topics:
+      - /drone/odom
+      ground_station_port: 8080
+      ground_station_qos_depth: 20
+      ground_station_reset_services:
+      - /drone/reset
+      ground_station_results_root: artifacts/experiments
+      ground_station_stale_timeout: 1.0
+      planner_status_topic: /drone/planner_status
+interfaces.yaml:
+  /**:
+    ros__parameters:
+      actuator_command_topic: /drone/motor_rpm_faulted
+      body_frame: base_link
+      disturbance_enable_service: /drone/disturbance/enable
+      disturbance_topic: /drone/disturbance
+      fault_enable_service: /fault/enable
+      fault_status_topic: /fault/status
+      goal_marker_topic: /drone/goal_marker
+      goal_topic: /drone/goal
+      gps_topic: /drone/gps
+      imu_topic: /drone/imu
+      local_pointcloud_topic: /drone/local_points
+      marker_topic: /drone/markers
+      mission_path_topic: /drone/mission_path
+      mission_status_topic: /drone/mission_status
+      motor_command_topic: /drone/motor_rpm_cmd
+      motor_state_topic: /drone/motor_rpm
+      obstacle_marker_topic: /map/obstacle_markers
+      obstacle_topic: /map/obstacles
+      odometry_topic: /drone/odom
+      path_topic: /drone/path
+      planned_path_topic: /drone/planned_path
+      planner_status_topic: /drone/planner_status
+      raw_goal_topic: /drone/raw_goal
+      reference_topic: /drone/reference
+      reset_service: /drone/reset
+      sensor_reset_service: /drone/sensors/reset
+      trajectory_path_topic: /drone/trajectory_path
+      trajectory_reference_topic: /drone/trajectory_reference
+      truth_imu_topic: /drone/truth/imu
+      truth_odometry_topic: /drone/truth/odom
+      voxel_marker_topic: /drone/voxel_map
+      world_frame: map
+launch.yaml:
+  experiment:
+    batch_record_rosbag: true
+    controller_start_delay: 1.0
+    rosbag_topics:
+    - /drone/truth/odom
+    - /drone/odom
+    - /drone/imu
+    - /drone/gps
+    - /drone/motor_rpm
+    - /drone/reference
+    - /drone/path
+    - /drone/disturbance
+    - /drone/planned_path
+    - /drone/planner_status
+    - /drone/local_points
+    - /map/obstacles
+    - /fault/status
+    - /drone/mission_status
+    rviz_start_delay: 1.0
+    scenario: hover
+    scenarios:
+    - hover
+    - target
+    - square
+    - circle
+    - figure_eight
+    - wind_gust
+    - sensor_noise
+    - fault_motor
+    - five_obstacles
+    - narrow_passage
+    - perception_replan
+    use_rviz: false
+  hover:
+    rviz_start_delay: 1.0
+    use_rviz: true
+  rviz_environment:
+    QT_AUTO_SCREEN_SCALE_FACTOR: '0'
+    QT_ENABLE_HIGHDPI_SCALING: '0'
+    QT_QPA_PLATFORM: xcb
+    QT_SCALE_FACTOR: '1'
+    QT_SCREEN_SCALE_FACTORS: '1'
+map.yaml:
+  static_obstacle_map_node:
+    ros__parameters:
+      box_obstacles:
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.45
+      - 1.2
+      - 1.8
+      - 2.0
+      - 1.0
+      - 1.0
+      - 0.5
+      - 0.7
+      - 2.0
+      - 2.0
+      - -1.0
+      - 0.8
+      - 0.55
+      - 0.8
+      - 1.6
+      - 3.1
+      - 0.4
+      - 1.0
+      - 0.5
+      - 1.0
+      - 2.0
+      - 4.0
+      - -0.6
+      - 0.9
+      - 0.5
+      - 0.9
+      - 1.8
+      cylinder_obstacles: []
+      inflation_color:
+      - 1.0
+      - 0.25
+      - 0.05
+      - 0.16
+      map_publish_frequency: 1.0
+      map_qos_depth: 1
+      obstacle_color:
+      - 0.72
+      - 0.28
+      - 0.12
+      - 0.9
+      random_exclusion_center:
+      - 0.0
+      - 0.0
+      - 1.0
+      random_exclusion_radius: 0.8
+      random_maximum:
+      - 3.0
+      - 3.0
+      - 2.0
+      random_minimum:
+      - -3.0
+      - -3.0
+      - 0.5
+      random_obstacle_count: 0
+      random_placement_attempts_per_obstacle: 100
+      random_seed: 7
+      random_size_maximum:
+      - 0.8
+      - 0.8
+      - 1.8
+      random_size_minimum:
+      - 0.3
+      - 0.3
+      - 0.5
+      visualized_inflation_radius: 0.68
+mission_circle.yaml:
+  analytic_trajectory_node:
+    ros__parameters:
+      trajectory_center:
+      - 0.0
+      - 0.0
+      - 1.5
+      trajectory_face_velocity: true
+      trajectory_period: 8.0
+      trajectory_preview_horizon: 8.0
+      trajectory_radius_x: 1.0
+      trajectory_radius_y: 1.0
+      trajectory_start_delay: 2.0
+      trajectory_type: circle
+  experiment_recorder:
+    ros__parameters:
+      duration: 19.0
+      output_dir: artifacts/experiments/circle
+      scenario: circle
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+mission_fault_motor.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 18.0
+      output_dir: artifacts/experiments/fault_motor
+      scenario: fault_motor
+  fault_injector_node:
+    ros__parameters:
+      fault_duration: 1.0
+      fault_enabled: true
+      fault_mode: motor_efficiency
+      fault_motor_efficiency: 0.82
+      fault_start_time: 5.0
+      fault_target_motor: 0
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: true
+mission_figure_eight.yaml:
+  analytic_trajectory_node:
+    ros__parameters:
+      trajectory_center:
+      - 0.0
+      - 0.0
+      - 1.5
+      trajectory_face_velocity: true
+      trajectory_period: 10.0
+      trajectory_preview_horizon: 10.0
+      trajectory_radius_x: 1.5
+      trajectory_radius_y: 0.8
+      trajectory_start_delay: 2.0
+      trajectory_type: figure_eight
+  experiment_recorder:
+    ros__parameters:
+      duration: 23.0
+      output_dir: artifacts/experiments/figure_eight
+      scenario: figure_eight
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+mission_five_obstacles.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 30.0
+      output_dir: artifacts/experiments/five_obstacles
+      scenario: five_obstacles
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+  waypoint_mission_node:
+    ros__parameters:
+      arrival_tolerance: 0.18
+      dwell_time: 0.8
+      goal_topic: /drone/raw_goal
+      start_delay: 1.0
+      waypoints:
+      - 0.0
+      - 0.0
+      - 1.5
+      - 0.0
+      - 5.0
+      - 0.0
+      - 1.5
+      - 0.0
+mission_hover.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 12.0
+      output_dir: artifacts/experiments/hover
+      scenario: hover
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: true
+mission_narrow_passage.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 32.0
+      output_dir: artifacts/experiments/narrow_passage
+      scenario: narrow_passage
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+  static_obstacle_map_node:
+    ros__parameters:
+      box_obstacles:
+      - 2.5
+      - 1.45
+      - 1.2
+      - 4.2
+      - 1.3
+      - 2.4
+      - 2.5
+      - -1.45
+      - 1.2
+      - 4.2
+      - 1.3
+      - 2.4
+      - 4.8
+      - 0.0
+      - 0.6
+      - 0.5
+      - 0.6
+      - 1.2
+  waypoint_mission_node:
+    ros__parameters:
+      arrival_tolerance: 0.18
+      dwell_time: 0.8
+      goal_topic: /drone/raw_goal
+      start_delay: 1.0
+      waypoints:
+      - 0.0
+      - 0.0
+      - 1.5
+      - 0.0
+      - 5.7
+      - 0.0
+      - 1.5
+      - 0.0
+mission_perception_replan.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 32.0
+      output_dir: artifacts/experiments/perception_replan
+      scenario: perception_replan
+  local_perception_node:
+    ros__parameters:
+      perception_horizontal_fov_degrees: 180.0
+      perception_maximum_range: 4.0
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+  voxel_astar_planner_node:
+    ros__parameters:
+      planner_replan_frequency: 2.0
+      use_local_pointcloud: true
+  waypoint_mission_node:
+    ros__parameters:
+      arrival_tolerance: 0.18
+      dwell_time: 0.8
+      goal_topic: /drone/raw_goal
+      start_delay: 1.0
+      waypoints:
+      - 0.0
+      - 0.0
+      - 1.5
+      - 0.0
+      - 5.0
+      - 0.5
+      - 1.5
+      - 0.0
+mission_sensor_noise.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 14.0
+      output_dir: artifacts/experiments/sensor_noise
+      scenario: sensor_noise
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: true
+  sensor_simulator_node:
+    ros__parameters:
+      accelerometer_initial_bias:
+      - 0.02
+      - -0.01
+      - 0.03
+      accelerometer_noise_stddev:
+      - 0.08
+      - 0.08
+      - 0.1
+      gyroscope_initial_bias:
+      - 0.002
+      - -0.001
+      - 0.001
+      gyroscope_noise_stddev:
+      - 0.005
+      - 0.005
+      - 0.008
+      position_noise_stddev:
+      - 0.03
+      - 0.03
+      - 0.05
+      sensor_noise_enabled: true
+      velocity_noise_stddev:
+      - 0.05
+      - 0.05
+      - 0.08
+mission_square.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 20.0
+      output_dir: artifacts/experiments/square
+      scenario: square
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+  waypoint_mission_node:
+    ros__parameters:
+      arrival_tolerance: 0.12
+      dwell_time: 0.6
+      start_delay: 0.5
+      waypoints:
+      - 0.0
+      - 0.0
+      - 1.5
+      - 0.0
+      - 1.0
+      - 0.0
+      - 1.5
+      - 0.0
+      - 1.0
+      - 1.0
+      - 1.5
+      - 0.0
+      - 0.0
+      - 1.0
+      - 1.5
+      - 0.0
+      - 0.0
+      - 0.0
+      - 1.5
+      - 0.0
+mission_target.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 16.0
+      output_dir: artifacts/experiments/target
+      scenario: target
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: false
+  waypoint_mission_node:
+    ros__parameters:
+      arrival_tolerance: 0.12
+      dwell_time: 0.8
+      start_delay: 0.5
+      waypoints:
+      - 2.0
+      - 1.0
+      - 1.5
+      - 0.0
+mission_wind_gust.yaml:
+  experiment_recorder:
+    ros__parameters:
+      duration: 14.0
+      output_dir: artifacts/experiments/wind_gust
+      scenario: wind_gust
+  position_controller_node:
+    ros__parameters:
+      auto_takeoff: true
+  quadrotor_dynamics_node:
+    ros__parameters:
+      disturbance_amplitude_force_world:
+      - 2.0
+      - 0.5
+      - 0.0
+      disturbance_duration: 2.0
+      disturbance_enabled: true
+      disturbance_mode: gust
+      disturbance_start_time: 5.0
+mode_panel.yaml:
+  mode_panel:
+    panel_backup_root: artifacts/panel_yaml_backups
+    panel_bind_address: 127.0.0.1
+    panel_editable_configs:
+    - model.yaml
+    - controller.yaml
+    - dynamics.yaml
+    - sensors.yaml
+    - trajectory.yaml
+    - map.yaml
+    - perception.yaml
+    - planner.yaml
+    - faults.yaml
+    - fleet.yaml
+    - visualization.yaml
+    - ground_station.yaml
+    - interfaces.yaml
+    - launch.yaml
+    - evaluation.yaml
+    - sweep.yaml
+    - tools.yaml
+    - mission_hover.yaml
+    - mission_target.yaml
+    - mission_square.yaml
+    - mission_circle.yaml
+    - mission_figure_eight.yaml
+    - mission_wind_gust.yaml
+    - mission_sensor_noise.yaml
+    - mission_fault_motor.yaml
+    - mission_five_obstacles.yaml
+    - mission_narrow_passage.yaml
+    - mission_perception_replan.yaml
+    - mode_panel.yaml
+    panel_ground_station_url: http://127.0.0.1:8080
+    panel_log_root: artifacts/panel_logs
+    panel_log_tail_lines: 180
+    panel_maximum_config_bytes: 262144
+    panel_maximum_duration_seconds: 3600.0
+    panel_maximum_request_bytes: 1048576
+    panel_maximum_results: 30
+    panel_port: 8060
+    panel_run_root: artifacts/panel_runs
+    panel_sigint_timeout_seconds: 8.0
+    panel_sigterm_timeout_seconds: 3.0
+    panel_startup_grace_seconds: 0.5
+    panel_verify_yaml_on_save: true
+    scenario_descriptions:
+      circle:
+        description: 解析位置/速度/加速度前馈
+        name: 圆轨迹
+      fault_motor:
+        description: 0 号电机效率衰减与恢复
+        name: 电机故障
+      figure_eight:
+        description: Gerono 八字连续参考
+        name: 八字轨迹
+      five_obstacles:
+        description: 点云、体素与 3D A*
+        name: 五障碍绕行
+      hover:
+        description: 自动起飞到 1.5 m 并稳定悬停
+        name: 悬停
+      narrow_passage:
+        description: 安全膨胀与窄通道跟踪
+        name: 狭窄通道
+      perception_replan:
+        description: 局部感知触发路径更新
+        name: 局部重规划
+      sensor_noise:
+        description: 增强噪声闭环与统计
+        name: 传感器噪声
+      square:
+        description: 连续完成五个 YAML 航点
+        name: 方形航点
+      target:
+        description: 飞往 (2, 1, 1.5) 并悬停
+        name: 目标点
+      wind_gust:
+        description: 3.04 N 阵风与恢复曲线
+        name: 阵风恢复
+model.yaml:
+  /**:
+    ros__parameters:
+      arm_length: 0.17
+      drag_moment_coefficient: 2.6e-07
+      gravity: 9.81
+      inertia_diagonal:
+      - 0.02
+      - 0.02
+      - 0.04
+      mass: 1.0
+      maximum_motor_speed: 2300.0
+      minimum_motor_speed: 0.0
+      thrust_coefficient: 1.91e-06
+perception.yaml:
+  local_perception_node:
+    ros__parameters:
+      minimum_cylinder_angular_samples: 12
+      occlusion_angular_bin_degrees: 1.5
+      perception_horizontal_fov_degrees: 270.0
+      perception_input_qos_depth: 10
+      perception_maximum_range: 6.0
+      perception_minimum_range: 0.15
+      perception_output_qos_depth: 1
+      perception_random_seed: 31
+      perception_update_frequency: 10.0
+      perception_vertical_fov_degrees: 120.0
+      point_color:
+      - 0.2
+      - 0.8
+      - 1.0
+      - 0.75
+      point_dropout_probability: 0.01
+      point_range_noise_stddev: 0.01
+      surface_sample_resolution: 0.18
+      voxel_maximum_cells: 20000
+      voxel_minimum_hits: 1
+      voxel_persistence_seconds: 0.8
+      voxel_resolution: 0.25
+planner.yaml:
+  voxel_astar_planner_node:
+    ros__parameters:
+      drone_collision_radius: 0.18
+      goal_tolerance: 0.18
+      line_check_step: 0.1
+      local_point_inflation_radius: 0.05
+      map_maximum:
+      - 6.0
+      - 3.0
+      - 3.0
+      map_minimum:
+      - -1.0
+      - -3.0
+      - 0.25
+      maximum_search_nodes: 120000
+      minimum_flight_height: 0.25
+      path_follower_frequency: 20.0
+      path_lookahead_distance: 0.18
+      planner_connectivity: 26
+      planner_goal_change_tolerance: 0.01
+      planner_input_qos_depth: 20
+      planner_output_qos_depth: 1
+      planner_replan_frequency: 1.0
+      planner_resolution: 0.25
+      planner_safety_margin: 0.5
+      planner_timeout: 1.5
+      planning_enabled: true
+      use_local_pointcloud: true
+sensors.yaml:
+  sensor_simulator_node:
+    ros__parameters:
+      accelerometer_bias_random_walk:
+      - 0.001
+      - 0.001
+      - 0.001
+      accelerometer_initial_bias:
+      - 0.0
+      - 0.0
+      - 0.0
+      accelerometer_noise_stddev:
+      - 0.03
+      - 0.03
+      - 0.04
+      gps_dropout_probability: 0.02
+      gps_dropout_random_seed: 30
+      gps_earth_radius: 6378137.0
+      gps_enabled: true
+      gps_horizontal_noise_stddev: 0.5
+      gps_minimum_longitude_cosine: 1.0e-06
+      gps_origin_altitude: 10.0
+      gps_origin_latitude: 22.302711
+      gps_origin_longitude: 114.177216
+      gps_output_delay: 0.0
+      gps_publish_frequency: 5.0
+      gps_random_seed: 29
+      gps_vertical_noise_stddev: 0.8
+      gyroscope_bias_random_walk:
+      - 0.0001
+      - 0.0001
+      - 0.0001
+      gyroscope_initial_bias:
+      - 0.0
+      - 0.0
+      - 0.0
+      gyroscope_noise_stddev:
+      - 0.002
+      - 0.002
+      - 0.003
+      orientation_noise_stddev:
+      - 0.002
+      - 0.002
+      - 0.004
+      position_noise_stddev:
+      - 0.01
+      - 0.01
+      - 0.015
+      sensor_minimum_dt: 1.0e-06
+      sensor_minimum_quaternion_norm: 1.0e-09
+      sensor_noise_enabled: true
+      sensor_output_delay: 0.0
+      sensor_output_qos_depth: 20
+      sensor_publish_frequency: 100.0
+      sensor_random_seed: 11
+      sensor_truth_qos_depth: 20
+      velocity_noise_stddev:
+      - 0.02
+      - 0.02
+      - 0.03
+sweep.yaml:
+  deterministic_replay:
+    duration: 14.0
+    metric_absolute_tolerance: 0.08
+    metrics:
+    - final_position_error_m
+    - steady_state_error_m
+    - maximum_disturbance_force_n
+    - disturbance_peak_error_m
+    - disturbance_recovery_time_s
+    output_root: artifacts/replay
+    scenario: wind_gust
+  parameter_sweep:
+    disturbance_force_scales:
+    - 0.75
+    - 1.0
+    - 1.25
+    duration: 11.0
+    metric: disturbance_peak_error_m
+    output_root: artifacts/parameter_sweep
+    position_kp_scales:
+    - 0.8
+    - 1.0
+    - 1.2
+    random_seed: 41
+    scenario: wind_gust
+tools.yaml:
+  experiment_recorder:
+    ros__parameters:
+      arrival_tolerance: 0.3
+      auxiliary_qos_depth: 10
+      check_frequency: 10.0
+      dashboard_dpi: 170
+      evaluation_drone_radius: 0.18
+      figure_dpi: 160
+      minimum_safe_obstacle_clearance: 0.3
+      motor_qos_depth: 20
+      odometry_qos_depth: 50
+      saturation_threshold: 0.99
+      steady_state_window: 2.0
+      transient_qos_depth: 1
+  waypoint_mission_node:
+    ros__parameters:
+      goal_qos_depth: 10
+      odometry_qos_depth: 20
+      transient_qos_depth: 1
+      update_frequency: 10.0
+trajectory.yaml:
+  analytic_trajectory_node:
+    ros__parameters:
+      trajectory_center:
+      - 0.0
+      - 0.0
+      - 1.5
+      trajectory_face_velocity: false
+      trajectory_fixed_yaw: 0.0
+      trajectory_minimum_yaw_speed: 1.0e-06
+      trajectory_path_qos_depth: 1
+      trajectory_period: 8.0
+      trajectory_phase: 0.0
+      trajectory_preview_horizon: 8.0
+      trajectory_preview_points: 200
+      trajectory_qos_depth: 10
+      trajectory_radius_x: 1.0
+      trajectory_radius_y: 1.0
+      trajectory_start_delay: 1.0
+      trajectory_type: circle
+      trajectory_update_frequency: 50.0
+visualization.yaml:
+  drone_marker_node:
+    ros__parameters:
+      arm_color:
+      - 0.12
+      - 0.12
+      - 0.15
+      - 1.0
+      arm_height: 0.02
+      arm_width: 0.025
+      body_color:
+      - 0.08
+      - 0.28
+      - 0.85
+      - 1.0
+      body_size:
+      - 0.24
+      - 0.16
+      - 0.08
+      goal_color:
+      - 0.15
+      - 0.95
+      - 0.25
+      - 0.9
+      goal_diameter: 0.18
+      goal_publish_frequency: 30.0
+      label_color:
+      - 0.95
+      - 0.95
+      - 0.95
+      - 1.0
+      label_height: 0.24
+      label_text: ROS2 Quadrotor
+      label_text_height: 0.1
+      marker_qos_depth: 1
+      model_publish_frequency: 1.0
+      nose_color:
+      - 1.0
+      - 0.85
+      - 0.05
+      - 1.0
+      nose_head_diameter: 0.05
+      nose_head_length: 0.05
+      nose_height: 0.07
+      nose_length: 0.32
+      nose_shaft_diameter: 0.025
+      reference_qos_depth: 1
+      rotor_diameter: 0.14
+      rotor_even_color:
+      - 0.95
+      - 0.25
+      - 0.12
+      - 0.85
+      rotor_height: 0.04
+      rotor_odd_color:
+      - 0.12
+      - 0.75
+      - 0.95
+      - 0.85
+      rotor_thickness: 0.012

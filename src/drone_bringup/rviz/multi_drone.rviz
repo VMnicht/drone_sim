@@ -1,0 +1,86 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Ground Grid
+      Plane: XY
+      Cell Size: 1
+      Plane Cell Count: 20
+    - Class: rviz_default_plugins/TF
+      Enabled: false
+      Name: Fleet TF
+      Show Names: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Drone 0 Model
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /drone_0/markers
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Drone 1 Model
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /drone_1/markers
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Drone 2 Model
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /drone_2/markers
+    - Class: rviz_default_plugins/Path
+      Enabled: true
+      Name: Drone 0 Path
+      Topic:
+        Value: /drone_0/path
+    - Class: rviz_default_plugins/Path
+      Enabled: true
+      Name: Drone 1 Path
+      Topic:
+        Value: /drone_1/path
+    - Class: rviz_default_plugins/Path
+      Enabled: true
+      Name: Drone 2 Path
+      Topic:
+        Value: /drone_2/path
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Safety Distance
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /fleet/safety_markers
+  Enabled: true
+  Global Options:
+    Background Color: 18; 24; 35
+    Fixed Frame: map
+    Frame Rate: 60
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 11
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 1.5
+      Pitch: 0.55
+      Yaw: 0.8
+Window Geometry:
+  Width: 1200
+  Height: 800

@@ -1,0 +1,30 @@
+static_obstacle_map_node:
+  ros__parameters:
+    map_publish_frequency: 1.0
+    map_qos_depth: 1
+
+    # Flat box entries: x, y, z, full_size_x, full_size_y, full_size_z.
+    box_obstacles: [
+      1.0,  0.0, 0.9, 0.45, 1.2, 1.8,
+      2.0,  1.0, 1.0, 0.50, 0.7, 2.0,
+      2.0, -1.0, 0.8, 0.55, 0.8, 1.6,
+      3.1,  0.4, 1.0, 0.50, 1.0, 2.0,
+      4.0, -0.6, 0.9, 0.50, 0.9, 1.8
+    ]
+    # Flat cylinder entries: x, y, z, diameter, height.
+    cylinder_obstacles: []
+
+    random_obstacle_count: 0
+    random_seed: 7
+    random_minimum: [-3.0, -3.0, 0.5]
+    random_maximum: [3.0, 3.0, 2.0]
+    random_size_minimum: [0.3, 0.3, 0.5]
+    random_size_maximum: [0.8, 0.8, 1.8]
+    random_exclusion_center: [0.0, 0.0, 1.0]
+    random_exclusion_radius: 0.8
+    random_placement_attempts_per_obstacle: 100
+
+    obstacle_color: [0.72, 0.28, 0.12, 0.90]
+    inflation_color: [1.0, 0.25, 0.05, 0.16]
+    # Vehicle radius (0.18) + planner reference-path margin (0.50).
+    visualized_inflation_radius: 0.68

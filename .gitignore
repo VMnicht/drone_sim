@@ -9,3 +9,9 @@ __pycache__/
 *.bag
 *.db3
 *.mcap
+
+# Local Panel sessions are transient; formal acceptance evidence lives under
+# artifacts/experiments and is intentionally versioned.
+artifacts/panel_logs/
+artifacts/panel_runs/
+artifacts/panel_yaml_backups/

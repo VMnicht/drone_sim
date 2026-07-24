@@ -2,15 +2,23 @@
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 import cv2
 import numpy as np
+import yaml
+
+from verify_experiments import evaluate_summaries, load_thresholds
 
 
-WIDTH = 1280
-HEIGHT = 720
-FPS = 30
+WORKSPACE = Path(__file__).resolve().parents[1]
+DEFAULT_CONFIG_DIR = WORKSPACE / "src" / "drone_bringup" / "config"
+WIDTH = 0
+HEIGHT = 0
+FPS = 0
+FINAL_ERROR_LIMIT = 0.0
+RPM_BAR_MAXIMUM = 0.0
 BG = (28, 32, 40)
 PANEL = (42, 48, 59)
 WHITE = (235, 238, 242)
@@ -18,6 +26,58 @@ MUTED = (165, 174, 188)
 ORANGE = (48, 105, 232)
 GREEN = (82, 194, 109)
 BLUE = (230, 152, 66)
+
+
+def load_yaml(path):
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise RuntimeError(f"invalid YAML mapping: {path}")
+    return data
+
+
+def load_settings(config_dir):
+    evaluation = load_yaml(config_dir / "evaluation.yaml")
+    video = evaluation["video"]
+    scenarios = load_yaml(config_dir / "launch.yaml")["experiment"]["scenarios"]
+    model = load_yaml(config_dir / "model.yaml")["/**"]["ros__parameters"]
+    tools = load_yaml(config_dir / "tools.yaml")["experiment_recorder"][
+        "ros__parameters"
+    ]
+    maximum_motor_rpm = (
+        float(model["maximum_motor_speed"]) * 60.0 / (2.0 * math.pi)
+    )
+    settings = {
+        "width": int(video["width"]),
+        "height": int(video["height"]),
+        "fps": int(video["frames_per_second"]),
+        "title_hold": float(video["title_hold_seconds"]),
+        "scenario_title_hold": float(video["scenario_title_hold_seconds"]),
+        "result_hold": float(video["result_hold_seconds"]),
+        "scenario_durations": {
+            str(name): float(seconds)
+            for name, seconds in video["scenario_duration_seconds"].items()
+        },
+        "minimum_duration": float(video["minimum_duration_seconds"]),
+        "maximum_duration": float(video["maximum_duration_seconds"]),
+        "rpm_bar_maximum": maximum_motor_rpm
+        * float(video["rpm_bar_headroom_ratio"]),
+        "plot_margin": float(video["plot_margin_fraction"]),
+        "minimum_plot_span": float(video["minimum_plot_span_m"]),
+        "scenarios": tuple(str(name) for name in scenarios),
+        "final_error_limit": float(tools["arrival_tolerance"]),
+    }
+    if (
+        settings["width"] <= 0
+        or settings["height"] <= 0
+        or settings["fps"] <= 0
+        or settings["rpm_bar_maximum"] <= 0.0
+        or settings["minimum_plot_span"] <= 0.0
+        or settings["plot_margin"] < 0.0
+        or settings["minimum_duration"] <= 0.0
+        or settings["maximum_duration"] < settings["minimum_duration"]
+    ):
+        raise RuntimeError("evaluation.yaml contains invalid video settings")
+    return settings
 
 
 def load_scenario(root, scenario):
@@ -52,12 +112,23 @@ def map_point(x_value, y_value, bounds, rectangle):
     return px, py
 
 
-def scenario_bounds(name):
-    if name == "hover":
-        return (-0.4, 0.4, -0.4, 0.4)
-    if name == "target":
-        return (-0.25, 2.25, -0.25, 1.25)
-    return (-0.25, 1.25, -0.25, 1.25)
+def scenario_bounds(data, margin, minimum_span):
+    x_values = np.concatenate((data["x"], data["ref_x"]))
+    y_values = np.concatenate((data["y"], data["ref_y"]))
+    x_values = x_values[np.isfinite(x_values)]
+    y_values = y_values[np.isfinite(y_values)]
+    if not len(x_values) or not len(y_values):
+        raise RuntimeError("scenario telemetry has no finite x/y positions")
+    x_center = 0.5 * (float(np.min(x_values)) + float(np.max(x_values)))
+    y_center = 0.5 * (float(np.min(y_values)) + float(np.max(y_values)))
+    x_span = max(float(np.ptp(x_values)), minimum_span) * (1.0 + 2.0 * margin)
+    y_span = max(float(np.ptp(y_values)), minimum_span) * (1.0 + 2.0 * margin)
+    return (
+        x_center - 0.5 * x_span,
+        x_center + 0.5 * x_span,
+        y_center - 0.5 * y_span,
+        y_center + 0.5 * y_span,
+    )
 
 
 def draw_grid(frame, rectangle, bounds):
@@ -86,15 +157,13 @@ def draw_drone(frame, center, yaw, scale=18):
     cv2.circle(frame, (cx, cy), 6, WHITE, -1, cv2.LINE_AA)
 
 
-def draw_scene(frame, name, data, summary, row_index, trail_start=0):
+def draw_scene(frame, name, data, summary, row_index, bounds, trail_start=0):
     frame[:] = BG
     text(frame, "ROS2 QUADROTOR SIMULATOR", (45, 55), 1.05, WHITE, 2)
     text(frame, f"Scenario: {name.upper()}", (45, 88), 0.65, GREEN, 2)
     rectangle = (55, 120, 740, 455)
     panel(frame, 35, 100, 780, 500)
-    draw_grid(frame, rectangle, scenario_bounds(name))
-
-    bounds = scenario_bounds(name)
+    draw_grid(frame, rectangle, bounds)
     positions = np.column_stack((data["x"], data["y"]))
     references = np.column_stack((data["ref_x"], data["ref_y"]))
     points = [
@@ -116,7 +185,14 @@ def draw_scene(frame, name, data, summary, row_index, trail_start=0):
     error = data["position_error"][row_index]
     text(frame, f"time        {time_value:6.2f} s", (875, 150), 0.72)
     text(frame, f"position    {data['x'][row_index]:5.2f}, {data['y'][row_index]:5.2f}, {data['z'][row_index]:5.2f} m", (875, 190), 0.62)
-    text(frame, f"error       {error:6.3f} m", (875, 230), 0.72, GREEN if error < 0.3 else ORANGE, 2)
+    text(
+        frame,
+        f"error       {error:6.3f} m",
+        (875, 230),
+        0.72,
+        GREEN if error < FINAL_ERROR_LIMIT else ORANGE,
+        2,
+    )
     text(frame, f"roll/pitch  {np.degrees(data['roll'][row_index]):5.1f}, {np.degrees(data['pitch'][row_index]):5.1f} deg", (875, 270), 0.60)
     text(frame, "motor RPM", (875, 325), 0.68, MUTED)
     rpm_values = [data[f"rpm_{index}"][row_index] for index in range(4)]
@@ -124,7 +200,7 @@ def draw_scene(frame, name, data, summary, row_index, trail_start=0):
         y = 355 + index * 45
         text(frame, f"M{index}", (875, y + 18), 0.55, WHITE)
         cv2.rectangle(frame, (920, y), (1190, y + 22), (60, 67, 79), -1)
-        length = int(np.clip(rpm / 16000.0, 0.0, 1.0) * 270)
+        length = int(np.clip(rpm / RPM_BAR_MAXIMUM, 0.0, 1.0) * 270)
         cv2.rectangle(frame, (920, y), (920 + length, y + 22), BLUE if index % 2 else ORANGE, -1)
         text(frame, f"{rpm:7.0f}", (1080, y + 18), 0.48, WHITE)
 
@@ -151,10 +227,19 @@ def write_hold(writer, frame, seconds, snapshots):
 
 
 def main():
+    global WIDTH, HEIGHT, FPS, FINAL_ERROR_LIMIT, RPM_BAR_MAXIMUM
+
     parser = argparse.ArgumentParser(description="Create a data-driven simulator demo video")
     parser.add_argument("--experiments", type=Path, default=Path("artifacts/experiments"))
     parser.add_argument("--output", type=Path, default=Path("output/video/drone_demo.mp4"))
+    parser.add_argument("--config-dir", type=Path, default=DEFAULT_CONFIG_DIR)
     args = parser.parse_args()
+    settings = load_settings(args.config_dir)
+    WIDTH = settings["width"]
+    HEIGHT = settings["height"]
+    FPS = settings["fps"]
+    FINAL_ERROR_LIMIT = settings["final_error_limit"]
+    RPM_BAR_MAXIMUM = settings["rpm_bar_maximum"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     writer = cv2.VideoWriter(
         str(args.output), cv2.VideoWriter_fourcc(*"mp4v"), FPS, (WIDTH, HEIGHT)
@@ -166,16 +251,22 @@ def main():
     write_hold(
         writer,
         title_frame("ROS2 QUADROTOR SIMULATOR", "Dynamics, model-based control and RViz2", 1.0),
-        5.0,
+        settings["title_hold"],
         snapshots,
     )
-    segment_settings = (("hover", 12.0), ("target", 16.0), ("square", 24.0))
+    segment_settings = tuple(
+        (name, settings["scenario_durations"][name])
+        for name in settings["scenarios"]
+    )
     for name, seconds in segment_settings:
         data, summary = load_scenario(args.experiments, name)
+        bounds = scenario_bounds(
+            data, settings["plot_margin"], settings["minimum_plot_span"]
+        )
         write_hold(
             writer,
             title_frame(name.upper(), f"Final position error: {summary['final_position_error_m']:.3f} m", 1.0),
-            2.0,
+            settings["scenario_title_hold"],
             snapshots,
         )
         frame_count = int(seconds * FPS)
@@ -184,12 +275,28 @@ def main():
                 int(frame_index / max(frame_count - 1, 1) * (len(data) - 1)), len(data) - 1
             )
             frame = np.empty((HEIGHT, WIDTH, 3), dtype=np.uint8)
-            draw_scene(frame, name, data, summary, row_index)
+            draw_scene(frame, name, data, summary, row_index, bounds)
             writer.write(frame)
         snapshots.append(frame.copy())
 
-    summaries = [load_scenario(args.experiments, name)[1] for name in ("hover", "target", "square")]
-    result = title_frame("ACCEPTANCE PASSED", "All tested final errors are below 0.3 m", 1.0)
+    summaries = [
+        load_scenario(args.experiments, name)[1]
+        for name in settings["scenarios"]
+    ]
+    summaries_by_name = {summary["scenario"]: summary for summary in summaries}
+    failures = evaluate_summaries(
+        summaries_by_name, load_thresholds(args.config_dir)
+    )
+    if failures:
+        raise RuntimeError(
+            "refusing to label a failing experiment video as accepted: "
+            + "; ".join(failures)
+        )
+    result = title_frame(
+        "ACCEPTANCE PASSED",
+        f"All tested final errors are below {FINAL_ERROR_LIMIT:.3f} m",
+        1.0,
+    )
     y = 465
     for summary in summaries:
         text(
@@ -200,7 +307,7 @@ def main():
             WHITE,
         )
         y += 42
-    write_hold(writer, result, 8.0, snapshots)
+    write_hold(writer, result, settings["result_hold"], snapshots)
     writer.release()
 
     contact_sheet = np.full((360, 640 * len(snapshots), 3), BG, dtype=np.uint8)
@@ -222,8 +329,11 @@ def main():
         raise RuntimeError("Generated video cannot be decoded")
     if (measured_width, measured_height) != (WIDTH, HEIGHT):
         raise RuntimeError("Generated video has an unexpected resolution")
-    if not 60.0 <= duration <= 180.0:
-        raise RuntimeError("Demo video must be between 1 and 3 minutes")
+    if not settings["minimum_duration"] <= duration <= settings["maximum_duration"]:
+        raise RuntimeError(
+            "Demo video duration is outside the configured range "
+            f"[{settings['minimum_duration']}, {settings['maximum_duration']}] s"
+        )
     print(
         f"Wrote {args.output}: {frame_count} frames, {measured_fps:.1f} FPS, "
         f"{duration:.1f} s, {measured_width}x{measured_height}; contact sheet: {contact_path}"

@@ -10,6 +10,8 @@
 - 将核心输出转换为 `/drone/motor_rpm_cmd`；
 - 发布 `/drone/reference` 供 RViz2 显示。
 
+共享物理量来自 `model.yaml`，控制增益和限幅来自 `controller.yaml`，frame/topic 来自 `interfaces.yaml`。统一 launch 按此顺序加载参数，完整调节说明见 `docs/parameters.md`。
+
 ## 位置模型控制
 
 控制器直接使用质量和重力模型计算世界系期望合力：
@@ -53,7 +55,7 @@ tau_d = -K_R .* e_R - K_Omega .* e_Omega + Omega x (I * Omega)
 ## 安全限制
 
 - 最大水平/垂向加速度；
-- 最大倾角 35 度；
+- 最大倾角 25 度（可在 YAML 中调整）；
 - 最大三轴力矩；
 - 最大推重比；
 - 电机最小/最大转速；

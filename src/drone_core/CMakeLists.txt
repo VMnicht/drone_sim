@@ -20,9 +20,12 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED
+  src/disturbance_model.cpp
   src/model_based_controller.cpp
   src/motor_mixer.cpp
   src/quadrotor_model.cpp
+  src/sensor_noise_model.cpp
+  src/trajectory_generator.cpp
 )
 target_include_directories(${PROJECT_NAME}
   PUBLIC
@@ -56,6 +59,10 @@ if(BUILD_TESTING AND NOT DRONE_CORE_STANDALONE)
   if(TARGET test_model_based_controller)
     target_link_libraries(test_model_based_controller ${PROJECT_NAME})
   endif()
+  ament_add_gtest(test_simulation_models test/test_simulation_models.cpp)
+  if(TARGET test_simulation_models)
+    target_link_libraries(test_simulation_models ${PROJECT_NAME})
+  endif()
 endif()
 
 if(BUILD_TESTING AND DRONE_CORE_STANDALONE)
@@ -69,6 +76,10 @@ if(BUILD_TESTING AND DRONE_CORE_STANDALONE)
     test_model_based_controller PRIVATE ${PROJECT_NAME} GTest::gtest_main
   )
   add_test(NAME test_model_based_controller COMMAND test_model_based_controller)
+
+  add_executable(test_simulation_models test/test_simulation_models.cpp)
+  target_link_libraries(test_simulation_models PRIVATE ${PROJECT_NAME} GTest::gtest_main)
+  add_test(NAME test_simulation_models COMMAND test_simulation_models)
 endif()
 
 if(NOT DRONE_CORE_STANDALONE)

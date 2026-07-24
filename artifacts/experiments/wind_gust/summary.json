@@ -1,0 +1,39 @@
+{
+  "scenario": "wind_gust",
+  "samples": 1342,
+  "duration_s": 14.078074004999507,
+  "final_position_error_m": 0.04566071480341697,
+  "steady_state_error_m": 0.07228390809577372,
+  "rms_position_error_m": 1.1929038708871573,
+  "maximum_position_error_m": 3.1048051750299717,
+  "arrival_time_s": 2.4271375859998443,
+  "maximum_altitude_overshoot_m": 0.05036214717557663,
+  "path_length_m": 38.24107452092996,
+  "maximum_speed_mps": 2.617926190654025,
+  "maximum_tilt_deg": 17.357492348055224,
+  "rpm_min": 0.0,
+  "rpm_max": 13717.202705107784,
+  "rpm_saturation_ratio": 0.0,
+  "mission_status": "not_applicable",
+  "planner_status": "not_applicable",
+  "fault_status": "{\"active\": false, \"dropped\": 0, \"elapsed\": 13.683527, \"enabled\": false, \"mode\": \"none\", \"modified\": 0, \"queued\": 0, \"received\": 1188, \"target_motor\": 0}",
+  "maximum_disturbance_force_n": 3.0413812651491097,
+  "disturbance_peak_error_m": 2.6937706571183737,
+  "disturbance_recovery_time_s": 2.2230999570001586,
+  "minimum_obstacle_clearance_m": null,
+  "required_obstacle_clearance_m": 0.3,
+  "planned_path_length_m": null,
+  "maximum_local_point_count": 0,
+  "mean_local_point_count": 0.0,
+  "sensor_position_noise_mean_m": [
+    6.085651013154996e-06,
+    4.9418604060425846e-05,
+    -0.0003687635599749079
+  ],
+  "sensor_position_noise_stddev_m": [
+    0.010167116832844372,
+    0.009971892011819703,
+    0.015102706901140545
+  ],
+  "sensor_position_noise_rms_m": 0.011986646966890556
+}

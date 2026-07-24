@@ -11,13 +11,25 @@
   <exec_depend>drone_controller</exec_depend>
   <exec_depend>drone_visualization</exec_depend>
   <exec_depend>drone_tools</exec_depend>
+  <exec_depend>drone_trajectory</exec_depend>
+  <exec_depend>drone_sensors</exec_depend>
+  <exec_depend>drone_map</exec_depend>
+  <exec_depend>drone_perception</exec_depend>
+  <exec_depend>drone_planner</exec_depend>
+  <exec_depend>drone_fleet</exec_depend>
+  <exec_depend>drone_ground_station</exec_depend>
+  <exec_depend>drone_faults</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>rosbag2_transport</exec_depend>
 
   <test_depend>launch_testing_ament_cmake</test_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>rclpy</test_depend>
   <test_depend>nav_msgs</test_depend>
+  <test_depend>sensor_msgs</test_depend>
   <test_depend>tf2_msgs</test_depend>
   <test_depend>visualization_msgs</test_depend>
   <test_depend>drone_msgs</test_depend>

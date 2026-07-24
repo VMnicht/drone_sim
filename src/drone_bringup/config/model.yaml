@@ -1,0 +1,12 @@
+/**:
+  ros__parameters:
+    # Shared rigid-body and actuator model. Both dynamics and controller load
+    # this file, so these values only need to be tuned in one place.
+    mass: 1.0
+    gravity: 9.81
+    inertia_diagonal: [0.02, 0.02, 0.04]
+    arm_length: 0.17
+    thrust_coefficient: 1.91e-6
+    drag_moment_coefficient: 2.60e-7
+    minimum_motor_speed: 0.0
+    maximum_motor_speed: 2300.0

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
 project(drone_map)
 find_package(ament_cmake REQUIRED)
+install(PROGRAMS scripts/static_obstacle_map_node.py DESTINATION lib/${PROJECT_NAME})
 ament_package()
-

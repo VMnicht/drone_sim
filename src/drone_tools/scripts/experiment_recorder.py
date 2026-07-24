@@ -3,16 +3,18 @@
 import csv
 import json
 import math
+import time
 from pathlib import Path
 
 import numpy as np
 import rclpy
-from drone_msgs.msg import MotorRPM
-from geometry_msgs.msg import PoseStamped
-from nav_msgs.msg import Odometry
+from drone_msgs.msg import MotorRPM, Obstacle, ObstacleArray
+from geometry_msgs.msg import PoseStamped, WrenchStamped
+from nav_msgs.msg import Odometry, Path as NavPath
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
+from sensor_msgs.msg import PointCloud2
 
 
 class ExperimentRecorder(Node):
@@ -22,37 +24,182 @@ class ExperimentRecorder(Node):
         self.declare_parameter("duration", 20.0)
         self.declare_parameter("scenario", "experiment")
         self.declare_parameter("arrival_tolerance", 0.3)
-        self.declare_parameter("maximum_motor_rpm", 2300.0 * 60.0 / (2.0 * math.pi))
+        self.declare_parameter("maximum_motor_speed", 2300.0)
+        self.declare_parameter("check_frequency", 10.0)
+        self.declare_parameter("steady_state_window", 2.0)
+        self.declare_parameter("saturation_threshold", 0.99)
+        self.declare_parameter("figure_dpi", 160)
+        self.declare_parameter("dashboard_dpi", 170)
+        self.declare_parameter("odometry_topic", "/drone/odom")
+        self.declare_parameter("truth_odometry_topic", "/drone/truth/odom")
+        self.declare_parameter("motor_state_topic", "/drone/motor_rpm")
+        self.declare_parameter("reference_topic", "/drone/reference")
+        self.declare_parameter("mission_status_topic", "/drone/mission_status")
+        self.declare_parameter("disturbance_topic", "/drone/disturbance")
+        self.declare_parameter("planner_status_topic", "/drone/planner_status")
+        self.declare_parameter("fault_status_topic", "/fault/status")
+        self.declare_parameter("obstacle_topic", "/map/obstacles")
+        self.declare_parameter("local_pointcloud_topic", "/drone/local_points")
+        self.declare_parameter("planned_path_topic", "/drone/planned_path")
+        self.declare_parameter("evaluation_drone_radius", 0.18)
+        self.declare_parameter("minimum_safe_obstacle_clearance", 0.30)
+        self.declare_parameter("odometry_qos_depth", 50)
+        self.declare_parameter("motor_qos_depth", 20)
+        self.declare_parameter("auxiliary_qos_depth", 10)
+        self.declare_parameter("transient_qos_depth", 1)
 
         self.output_dir = Path(str(self.get_parameter("output_dir").value)).expanduser()
         self.duration = float(self.get_parameter("duration").value)
         self.scenario = str(self.get_parameter("scenario").value)
         self.arrival_tolerance = float(self.get_parameter("arrival_tolerance").value)
-        self.maximum_motor_rpm = float(self.get_parameter("maximum_motor_rpm").value)
-        if self.duration <= 0.0 or self.arrival_tolerance <= 0.0:
-            raise ValueError("duration and arrival_tolerance must be positive")
+        maximum_motor_speed = float(self.get_parameter("maximum_motor_speed").value)
+        self.maximum_motor_rpm = maximum_motor_speed * 60.0 / (2.0 * math.pi)
+        self.check_frequency = float(self.get_parameter("check_frequency").value)
+        self.steady_state_window = float(
+            self.get_parameter("steady_state_window").value
+        )
+        self.saturation_threshold = float(
+            self.get_parameter("saturation_threshold").value
+        )
+        self.figure_dpi = int(self.get_parameter("figure_dpi").value)
+        self.dashboard_dpi = int(self.get_parameter("dashboard_dpi").value)
+        self.odometry_topic = str(self.get_parameter("odometry_topic").value)
+        self.truth_odometry_topic = str(
+            self.get_parameter("truth_odometry_topic").value
+        )
+        self.motor_state_topic = str(self.get_parameter("motor_state_topic").value)
+        self.reference_topic = str(self.get_parameter("reference_topic").value)
+        self.mission_status_topic = str(
+            self.get_parameter("mission_status_topic").value
+        )
+        self.disturbance_topic = str(self.get_parameter("disturbance_topic").value)
+        self.planner_status_topic = str(self.get_parameter("planner_status_topic").value)
+        self.fault_status_topic = str(self.get_parameter("fault_status_topic").value)
+        self.obstacle_topic = str(self.get_parameter("obstacle_topic").value)
+        self.local_pointcloud_topic = str(
+            self.get_parameter("local_pointcloud_topic").value
+        )
+        self.planned_path_topic = str(self.get_parameter("planned_path_topic").value)
+        self.drone_radius = float(self.get_parameter("evaluation_drone_radius").value)
+        self.minimum_safe_clearance = float(
+            self.get_parameter("minimum_safe_obstacle_clearance").value
+        )
+        self.odometry_qos_depth = int(self.get_parameter("odometry_qos_depth").value)
+        self.motor_qos_depth = int(self.get_parameter("motor_qos_depth").value)
+        self.auxiliary_qos_depth = int(
+            self.get_parameter("auxiliary_qos_depth").value
+        )
+        self.transient_qos_depth = int(self.get_parameter("transient_qos_depth").value)
+        if (
+            not math.isfinite(self.duration)
+            or self.duration <= 0.0
+            or not math.isfinite(self.arrival_tolerance)
+            or self.arrival_tolerance <= 0.0
+            or not math.isfinite(maximum_motor_speed)
+            or maximum_motor_speed <= 0.0
+            or not math.isfinite(self.check_frequency)
+            or self.check_frequency <= 0.0
+            or not math.isfinite(self.steady_state_window)
+            or self.steady_state_window <= 0.0
+            or not math.isfinite(self.saturation_threshold)
+            or not 0.0 < self.saturation_threshold <= 1.0
+            or not math.isfinite(self.drone_radius)
+            or self.drone_radius < 0.0
+            or not math.isfinite(self.minimum_safe_clearance)
+            or self.minimum_safe_clearance < 0.0
+        ):
+            raise ValueError("experiment timing and acceptance parameters are invalid")
+        if (
+            self.figure_dpi <= 0
+            or self.dashboard_dpi <= 0
+            or self.odometry_qos_depth <= 0
+            or self.motor_qos_depth <= 0
+            or self.auxiliary_qos_depth <= 0
+            or self.transient_qos_depth <= 0
+            or not self.odometry_topic
+            or not self.truth_odometry_topic
+            or not self.motor_state_topic
+            or not self.reference_topic
+            or not self.mission_status_topic
+            or not self.disturbance_topic
+            or not self.planner_status_topic
+            or not self.fault_status_topic
+            or not self.obstacle_topic
+            or not self.local_pointcloud_topic
+            or not self.planned_path_topic
+        ):
+            raise ValueError("experiment output and interface parameters are invalid")
+        if not self.scenario or not str(self.output_dir):
+            raise ValueError("scenario and output_dir must not be empty")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        transient_qos = QoSProfile(depth=1)
+        transient_qos = QoSProfile(depth=self.transient_qos_depth)
         transient_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
         transient_qos.reliability = ReliabilityPolicy.RELIABLE
-        self.create_subscription(Odometry, "/drone/odom", self.odometry_callback, 50)
-        self.create_subscription(MotorRPM, "/drone/motor_rpm", self.motor_callback, 20)
         self.create_subscription(
-            PoseStamped, "/drone/reference", self.reference_callback, transient_qos
+            Odometry,
+            self.odometry_topic,
+            self.odometry_callback,
+            self.odometry_qos_depth,
         )
         self.create_subscription(
-            String, "/drone/mission_status", self.status_callback, transient_qos
+            Odometry,
+            self.truth_odometry_topic,
+            self.truth_odometry_callback,
+            self.odometry_qos_depth,
+        )
+        self.create_subscription(
+            MotorRPM,
+            self.motor_state_topic,
+            self.motor_callback,
+            self.motor_qos_depth,
+        )
+        self.create_subscription(
+            PoseStamped, self.reference_topic, self.reference_callback, transient_qos
+        )
+        self.create_subscription(
+            String, self.mission_status_topic, self.status_callback, transient_qos
+        )
+        self.create_subscription(
+            WrenchStamped,
+            self.disturbance_topic,
+            self.disturbance_callback,
+            self.auxiliary_qos_depth,
+        )
+        self.create_subscription(
+            String, self.planner_status_topic, self.planner_status_callback, transient_qos
+        )
+        self.create_subscription(
+            String, self.fault_status_topic, self.fault_status_callback, transient_qos
+        )
+        self.create_subscription(
+            ObstacleArray, self.obstacle_topic, self.obstacle_callback, transient_qos
+        )
+        self.create_subscription(
+            PointCloud2,
+            self.local_pointcloud_topic,
+            self.pointcloud_callback,
+            self.auxiliary_qos_depth,
+        )
+        self.create_subscription(
+            NavPath, self.planned_path_topic, self.planned_path_callback, transient_qos
         )
 
-        self.start_time = self.get_clock().now()
+        self.start_time = time.monotonic()
         self.latest_rpm = [0.0, 0.0, 0.0, 0.0]
         self.reference = [math.nan, math.nan, math.nan]
         self.reference_history = []
         self.mission_status = "not_applicable"
+        self.planner_status = "not_applicable"
+        self.fault_status = "not_applicable"
+        self.latest_disturbance = [0.0] * 6
+        self.latest_truth_position = [math.nan, math.nan, math.nan]
+        self.local_point_count = 0
+        self.obstacles = []
+        self.planned_path_length = math.nan
         self.rows = []
         self.finished = False
-        self.timer = self.create_timer(0.1, self.check_finished)
+        self.timer = self.create_timer(1.0 / self.check_frequency, self.check_finished)
         self.get_logger().info(
             f"Recording scenario '{self.scenario}' for {self.duration:.1f} s into {self.output_dir}"
         )
@@ -67,10 +214,14 @@ class ExperimentRecorder(Node):
         return roll, pitch, yaw
 
     def elapsed(self):
-        return (self.get_clock().now() - self.start_time).nanoseconds * 1e-9
+        return time.monotonic() - self.start_time
 
     def motor_callback(self, message):
         self.latest_rpm = list(message.rpm)
+
+    def truth_odometry_callback(self, message):
+        position = message.pose.pose.position
+        self.latest_truth_position = [position.x, position.y, position.z]
 
     def reference_callback(self, message):
         candidate = [
@@ -84,6 +235,64 @@ class ExperimentRecorder(Node):
 
     def status_callback(self, message):
         self.mission_status = message.data
+
+    def planner_status_callback(self, message):
+        self.planner_status = message.data
+
+    def fault_status_callback(self, message):
+        self.fault_status = message.data
+
+    def disturbance_callback(self, message):
+        self.latest_disturbance = [
+            message.wrench.force.x,
+            message.wrench.force.y,
+            message.wrench.force.z,
+            message.wrench.torque.x,
+            message.wrench.torque.y,
+            message.wrench.torque.z,
+        ]
+
+    def obstacle_callback(self, message):
+        self.obstacles = list(message.obstacles)
+
+    def pointcloud_callback(self, message):
+        self.local_point_count = int(message.width * message.height)
+
+    def planned_path_callback(self, message):
+        points = [pose.pose.position for pose in message.poses]
+        self.planned_path_length = sum(
+            math.sqrt(
+                (second.x - first.x) ** 2
+                + (second.y - first.y) ** 2
+                + (second.z - first.z) ** 2
+            )
+            for first, second in zip(points, points[1:])
+        )
+
+    def obstacle_clearance(self, position):
+        clearances = []
+        for obstacle in self.obstacles:
+            center = obstacle.pose.position
+            if obstacle.type == Obstacle.BOX:
+                offsets = [
+                    abs(position.x - center.x) - obstacle.size.x / 2.0,
+                    abs(position.y - center.y) - obstacle.size.y / 2.0,
+                    abs(position.z - center.z) - obstacle.size.z / 2.0,
+                ]
+                outside = math.sqrt(sum(max(value, 0.0) ** 2 for value in offsets))
+                signed = outside if any(value > 0.0 for value in offsets) else max(offsets)
+            elif obstacle.type == Obstacle.CYLINDER:
+                radial = math.hypot(position.x - center.x, position.y - center.y)
+                radial_offset = radial - obstacle.size.x / 2.0
+                vertical_offset = abs(position.z - center.z) - obstacle.size.z / 2.0
+                outside = math.hypot(max(radial_offset, 0.0), max(vertical_offset, 0.0))
+                signed = outside if radial_offset > 0.0 or vertical_offset > 0.0 else max(
+                    radial_offset, vertical_offset
+                )
+            else:
+                continue
+            clearances.append(signed - self.drone_radius)
+        return min(clearances) if clearances else math.nan
 
     def odometry_callback(self, message):
         if self.finished:
@@ -116,6 +325,12 @@ class ExperimentRecorder(Node):
                 self.reference[2],
                 error,
                 *self.latest_rpm,
+                *self.latest_disturbance,
+                self.obstacle_clearance(position),
+                self.local_point_count,
+                position.x - self.latest_truth_position[0],
+                position.y - self.latest_truth_position[1],
+                position.z - self.latest_truth_position[2],
             ]
         )
 
@@ -153,15 +368,26 @@ class ExperimentRecorder(Node):
             "rpm_1",
             "rpm_2",
             "rpm_3",
+            "disturbance_fx",
+            "disturbance_fy",
+            "disturbance_fz",
+            "disturbance_tx",
+            "disturbance_ty",
+            "disturbance_tz",
+            "obstacle_clearance",
+            "local_point_count",
+            "position_noise_x",
+            "position_noise_y",
+            "position_noise_z",
         ]
         with (self.output_dir / "telemetry.csv").open("w", newline="", encoding="utf-8") as output:
-            writer = csv.writer(output)
+            writer = csv.writer(output, lineterminator="\n")
             writer.writerow(columns)
             writer.writerows(self.rows)
         with (self.output_dir / "reference_history.csv").open(
             "w", newline="", encoding="utf-8"
         ) as output:
-            writer = csv.writer(output)
+            writer = csv.writer(output, lineterminator="\n")
             writer.writerow(["time", "x", "y", "z"])
             writer.writerows(self.reference_history)
 
@@ -173,10 +399,14 @@ class ExperimentRecorder(Node):
         reference = data[:, 10:13]
         error = data[:, 13]
         rpm = data[:, 14:18]
+        disturbance = data[:, 18:24]
+        clearance = data[:, 24]
+        point_count = data[:, 25]
+        position_noise = data[:, 26:29]
         valid_error = error[np.isfinite(error)]
         path_length = float(np.linalg.norm(np.diff(position, axis=0), axis=1).sum())
         final_error = float(valid_error[-1]) if valid_error.size else math.nan
-        final_window = time >= max(time[-1] - 2.0, time[0])
+        final_window = time >= max(time[-1] - self.steady_state_window, time[0])
         steady_errors = error[final_window & np.isfinite(error)]
         steady_error = float(np.mean(steady_errors)) if steady_errors.size else math.nan
         arrival_indices = np.flatnonzero(np.isfinite(error) & (error <= self.arrival_tolerance))
@@ -187,13 +417,40 @@ class ExperimentRecorder(Node):
             if final_reference_z.size
             else math.nan
         )
-        saturation_ratio = float(np.mean(rpm >= 0.99 * self.maximum_motor_rpm))
+        saturation_ratio = float(
+            np.mean(rpm >= self.saturation_threshold * self.maximum_motor_rpm)
+        )
+        disturbance_force_norm = np.linalg.norm(disturbance[:, :3], axis=1)
+        disturbed = disturbance_force_norm > 1.0e-9
+        disturbance_peak_error = (
+            float(np.nanmax(error[disturbed])) if np.any(disturbed) else None
+        )
+        recovery_time = None
+        if np.any(disturbed):
+            disturbance_end = int(np.flatnonzero(disturbed)[-1])
+            recovered = np.flatnonzero(
+                np.isfinite(error[disturbance_end:])
+                & (error[disturbance_end:] <= self.arrival_tolerance)
+            )
+            if recovered.size:
+                recovery_time = float(
+                    time[disturbance_end + recovered[0]] - time[disturbance_end]
+                )
+        finite_clearance = clearance[np.isfinite(clearance)]
+        finite_noise_rows = position_noise[np.all(np.isfinite(position_noise), axis=1)]
         self.summary = {
             "scenario": self.scenario,
             "samples": int(len(data)),
             "duration_s": float(time[-1]),
             "final_position_error_m": final_error,
             "steady_state_error_m": steady_error,
+            "rms_position_error_m": (
+                float(np.sqrt(np.mean(valid_error * valid_error)))
+                if valid_error.size else math.nan
+            ),
+            "maximum_position_error_m": (
+                float(valid_error.max()) if valid_error.size else math.nan
+            ),
             "arrival_time_s": arrival_time,
             "maximum_altitude_overshoot_m": overshoot,
             "path_length_m": path_length,
@@ -205,6 +462,34 @@ class ExperimentRecorder(Node):
             "rpm_max": float(rpm.max()),
             "rpm_saturation_ratio": saturation_ratio,
             "mission_status": self.mission_status,
+            "planner_status": self.planner_status,
+            "fault_status": self.fault_status,
+            "maximum_disturbance_force_n": float(disturbance_force_norm.max()),
+            "disturbance_peak_error_m": disturbance_peak_error,
+            "disturbance_recovery_time_s": recovery_time,
+            "minimum_obstacle_clearance_m": (
+                float(finite_clearance.min()) if finite_clearance.size else None
+            ),
+            "required_obstacle_clearance_m": self.minimum_safe_clearance,
+            "planned_path_length_m": (
+                self.planned_path_length
+                if math.isfinite(self.planned_path_length)
+                else None
+            ),
+            "maximum_local_point_count": int(point_count.max()),
+            "mean_local_point_count": float(point_count.mean()),
+            "sensor_position_noise_mean_m": (
+                finite_noise_rows.mean(axis=0).tolist()
+                if finite_noise_rows.size else None
+            ),
+            "sensor_position_noise_stddev_m": (
+                finite_noise_rows.std(axis=0).tolist()
+                if finite_noise_rows.size else None
+            ),
+            "sensor_position_noise_rms_m": (
+                float(np.sqrt(np.mean(finite_noise_rows * finite_noise_rows)))
+                if finite_noise_rows.size else None
+            ),
         }
         (self.output_dir / "summary.json").write_text(
             json.dumps(self.summary, indent=2, ensure_ascii=False), encoding="utf-8"
@@ -215,6 +500,7 @@ class ExperimentRecorder(Node):
         self.plot_attitude(time, attitude)
         self.plot_trajectory(position)
         self.plot_dashboard(time, position, reference, error, rpm)
+        self.plot_environment_metrics(time, disturbance, clearance, point_count)
 
     def new_figure(self, *args, **kwargs):
         # The Ubuntu 22.04 matplotlib package predates the seaborn-v0_8 style
@@ -240,7 +526,7 @@ class ExperimentRecorder(Node):
         axes[-1].set_xlabel("time (s)")
         figure.suptitle(f"Position tracking - {self.scenario}")
         figure.tight_layout()
-        figure.savefig(self.output_dir / "position_tracking.png", dpi=160)
+        figure.savefig(self.output_dir / "position_tracking.png", dpi=self.figure_dpi)
         plt.close(figure)
 
     def plot_error(self, time, error):
@@ -250,7 +536,7 @@ class ExperimentRecorder(Node):
         axis.set(xlabel="time (s)", ylabel="position error (m)", title=f"Position error - {self.scenario}")
         axis.legend()
         figure.tight_layout()
-        figure.savefig(self.output_dir / "position_error.png", dpi=160)
+        figure.savefig(self.output_dir / "position_error.png", dpi=self.figure_dpi)
         plt.close(figure)
 
     def plot_rpm(self, time, rpm):
@@ -260,7 +546,7 @@ class ExperimentRecorder(Node):
         axis.set(xlabel="time (s)", ylabel="RPM", title=f"Motor speeds - {self.scenario}")
         axis.legend(ncol=4)
         figure.tight_layout()
-        figure.savefig(self.output_dir / "motor_rpm.png", dpi=160)
+        figure.savefig(self.output_dir / "motor_rpm.png", dpi=self.figure_dpi)
         plt.close(figure)
 
     def plot_attitude(self, time, attitude):
@@ -270,7 +556,7 @@ class ExperimentRecorder(Node):
         axis.set(xlabel="time (s)", ylabel="angle (deg)", title=f"Attitude - {self.scenario}")
         axis.legend(ncol=3)
         figure.tight_layout()
-        figure.savefig(self.output_dir / "attitude.png", dpi=160)
+        figure.savefig(self.output_dir / "attitude.png", dpi=self.figure_dpi)
         plt.close(figure)
 
     def plot_trajectory(self, position):
@@ -283,7 +569,7 @@ class ExperimentRecorder(Node):
         axis.set(xlabel="x (m)", ylabel="y (m)", zlabel="z (m)", title=f"3D trajectory - {self.scenario}")
         axis.legend()
         figure.tight_layout()
-        figure.savefig(self.output_dir / "trajectory_3d.png", dpi=160)
+        figure.savefig(self.output_dir / "trajectory_3d.png", dpi=self.figure_dpi)
         plt.close(figure)
 
     def plot_dashboard(self, time, position, reference, error, rpm):
@@ -303,7 +589,28 @@ class ExperimentRecorder(Node):
         axes[1, 1].set(xlabel="time (s)", ylabel="RPM", title="Motor speeds")
         figure.suptitle(f"Experiment summary - {self.scenario}")
         figure.tight_layout()
-        figure.savefig(self.output_dir / "experiment_summary.png", dpi=170)
+        figure.savefig(self.output_dir / "experiment_summary.png", dpi=self.dashboard_dpi)
+        plt.close(figure)
+
+    def plot_environment_metrics(self, time, disturbance, clearance, point_count):
+        figure, axes = self.new_figure(3, 1, figsize=(9, 7), sharex=True)
+        axes[0].plot(time, np.linalg.norm(disturbance[:, :3], axis=1))
+        axes[0].set_ylabel("force (N)")
+        axes[0].set_title("External disturbance")
+        axes[1].plot(time, clearance, color="#d97706")
+        axes[1].axhline(
+            self.minimum_safe_clearance,
+            color="#b91c1c",
+            linestyle="--",
+            label="required clearance",
+        )
+        axes[1].set_ylabel("clearance (m)")
+        axes[1].set_title("Obstacle clearance")
+        axes[1].legend(loc="best")
+        axes[2].plot(time, point_count, color="#0284c7")
+        axes[2].set(xlabel="time (s)", ylabel="points", title="Local point cloud")
+        figure.tight_layout()
+        figure.savefig(self.output_dir / "environment_metrics.png", dpi=self.figure_dpi)
         plt.close(figure)
 
 

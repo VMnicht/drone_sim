@@ -1,0 +1,19 @@
+fault_injector_node:
+  ros__parameters:
+    fault_enabled: false
+    # Modes: none, motor_efficiency, motor_limit, command_dropout,
+    # command_delay, command_freeze.
+    fault_mode: none
+    fault_target_motor: 0
+    fault_start_time: 5.0
+    fault_duration: 2.0
+    fault_motor_efficiency: 0.65
+    fault_motor_maximum_rpm: 7000.0
+    fault_dropout_probability: 0.25
+    fault_command_delay: 0.12
+    fault_random_seed: 47
+    fault_update_frequency: 200.0
+    fault_status_frequency: 2.0
+    fault_input_qos_depth: 20
+    fault_output_qos_depth: 20
+    fault_status_qos_depth: 1

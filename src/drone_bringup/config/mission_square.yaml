@@ -12,4 +12,13 @@ waypoint_mission_node:
     arrival_tolerance: 0.12
     dwell_time: 0.6
     start_delay: 0.5
-    world_frame: map
+
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: false
+
+experiment_recorder:
+  ros__parameters:
+    scenario: square
+    duration: 20.0
+    output_dir: artifacts/experiments/square

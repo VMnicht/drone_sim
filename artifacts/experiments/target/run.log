@@ -1,0 +1,60 @@
+[INFO] [launch]: All log files can be found below /home/tang/.ros/log/2026-07-23-17-06-41-159752-LAPTOP-AC5N9NOG-45027
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [quadrotor_dynamics_node-1]: process started with pid [45028]
+[INFO] [fault_injector_node.py-2]: process started with pid [45030]
+[INFO] [sensor_simulator_node-3]: process started with pid [45032]
+[INFO] [drone_marker_node.py-4]: process started with pid [45034]
+[INFO] [experiment_recorder.py-5]: process started with pid [45036]
+[INFO] [ros2-6]: process started with pid [45038]
+[sensor_simulator_node-3] [INFO] [1784797601.222355072] [sensor_simulator_node]: Sensor simulator ready at 100.0 Hz; noise enabled
+[quadrotor_dynamics_node-1] [INFO] [1784797601.224739086] [quadrotor_dynamics_node]: Dynamics ready: fixed-step 200.0 Hz, state 100.0 Hz, path sample/publish 10.0/5.0 Hz; hover speed 1133.15 rad/s (10820.8 RPM)
+[quadrotor_dynamics_node-1] [INFO] [1784797601.224838662] [quadrotor_dynamics_node]: A non-zero external disturbance is configured (disabled)
+[fault_injector_node.py-2] [INFO] [1784797601.396269572] [fault_injector_node]: Fault injector ready in mode 'none', enabled=False
+[ros2-6] stdin is not a terminal device. Keyboard handling disabled.[INFO] [1784797601.409223955] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[ros2-6] [INFO] [1784797601.411120493] [rosbag2_storage]: Opened database '/home/tang/drone_sim_ws/artifacts/experiments/target/rosbag_20260723T090640Z/rosbag_20260723T090640Z_0.db3' for READ_WRITE.
+[ros2-6] [INFO] [1784797601.411895143] [rosbag2_recorder]: Listening for topics...
+[ros2-6] [INFO] [1784797601.411909185] [rosbag2_recorder]: Event publisher thread: Starting
+[ros2-6] [INFO] [1784797601.413514925] [rosbag2_recorder]: Subscribed to topic '/fault/status'
+[ros2-6] [INFO] [1784797601.414893176] [rosbag2_recorder]: Subscribed to topic '/drone/truth/odom'
+[ros2-6] [INFO] [1784797601.415531508] [rosbag2_recorder]: Subscribed to topic '/drone/path'
+[ros2-6] [INFO] [1784797601.416438442] [rosbag2_recorder]: Subscribed to topic '/drone/motor_rpm'
+[ros2-6] [INFO] [1784797601.417417502] [rosbag2_recorder]: Subscribed to topic '/drone/imu'
+[ros2-6] [INFO] [1784797601.418030447] [rosbag2_recorder]: Subscribed to topic '/drone/odom'
+[ros2-6] [INFO] [1784797601.419051876] [rosbag2_recorder]: Subscribed to topic '/drone/gps'
+[ros2-6] [INFO] [1784797601.420150115] [rosbag2_recorder]: Subscribed to topic '/drone/disturbance'
+[ros2-6] [INFO] [1784797601.420318594] [rosbag2_recorder]: Recording...
+[experiment_recorder.py-5] [INFO] [1784797601.446484405] [experiment_recorder]: Recording scenario 'target' for 16.0 s into /home/tang/drone_sim_ws/artifacts/experiments/target
+[INFO] [position_controller_node-7]: process started with pid [45104]
+[INFO] [waypoint_mission_node.py-8]: process started with pid [45106]
+[position_controller_node-7] [INFO] [1784797602.237137677] [position_controller_node]: Model-based controller ready at 100.0 Hz; auto takeoff disabled to (0.00, 0.00, 1.50)
+[ros2-6] [INFO] [1784797602.331226714] [rosbag2_recorder]: Subscribed to topic '/drone/reference'
+[waypoint_mission_node.py-8] [INFO] [1784797602.751107386] [waypoint_mission_node]: Loaded 1 mission waypoints
+[ros2-6] [INFO] [1784797602.837808490] [rosbag2_recorder]: Subscribed to topic '/drone/mission_status'
+[position_controller_node-7] [INFO] [1784797603.238099019] [position_controller_node]: New goal: (2.00, 1.00, 1.50), yaw 0.00
+[quadrotor_dynamics_node-1] [INFO] [1784797606.225995044] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.4 Hz, state/TF 95.2 Hz, path 4.6 Hz
+[waypoint_mission_node.py-8] [INFO] [1784797608.038600325] [waypoint_mission_node]: Reached waypoint 1/1
+[waypoint_mission_node.py-8] [INFO] [1784797608.039237027] [waypoint_mission_node]: Waypoint mission completed
+[quadrotor_dynamics_node-1] [INFO] [1784797611.229821775] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.4 Hz, state/TF 95.1 Hz, path 4.8 Hz
+[quadrotor_dynamics_node-1] [INFO] [1784797614.673072006] [quadrotor_dynamics_node]: Timing 5.00 s: integration 190.7 Hz, state/TF 95.4 Hz, path 4.8 Hz
+[experiment_recorder.py-5] [INFO] [1784797617.092846241] [experiment_recorder]: EXPERIMENT_COMPLETE {"scenario": "target", "samples": 1527, "duration_s": 16.054528400999516, "final_position_error_m": 0.020266974264313443, "steady_state_error_m": 0.020138904286383444, "rms_position_error_m": 0.7121897611334077, "maximum_position_error_m": 2.7129905375789467, "arrival_time_s": 3.7542090299994015, "maximum_altitude_overshoot_m": 0.0532028090743526, "path_length_m": 42.306185169649666, "maximum_speed_mps": 2.0080582794011756, "maximum_tilt_deg": 16.634993314133183, "rpm_min": 0.0, "rpm_max": 13825.143157232045, "rpm_saturation_ratio": 0.0, "mission_status": "completed;index=0;count=1", "planner_status": "not_applicable", "fault_status": "{\"active\": false, \"dropped\": 0, \"elapsed\": 16.059707, \"enabled\": false, \"mode\": \"none\", \"modified\": 0, \"queued\": 0, \"received\": 1448, \"target_motor\": 0}", "maximum_disturbance_force_n": 0.0, "disturbance_peak_error_m": null, "disturbance_recovery_time_s": null, "minimum_obstacle_clearance_m": null, "required_obstacle_clearance_m": 0.3, "planned_path_length_m": null, "maximum_local_point_count": 0, "mean_local_point_count": 0.0, "sensor_position_noise_mean_m": [2.292031531900492e-05, 0.0001334152179368271, -0.0001588324959541828], "sensor_position_noise_stddev_m": [0.010225636724196198, 0.010017051486536492, 0.015114981942088702], "sensor_position_noise_rms_m": 0.01201958400183943}
+[INFO] [experiment_recorder.py-5]: process has finished cleanly [pid 45036]
+[INFO] [waypoint_mission_node.py-8]: sending signal 'SIGINT' to process[waypoint_mission_node.py-8]
+[INFO] [position_controller_node-7]: sending signal 'SIGINT' to process[position_controller_node-7]
+[INFO] [ros2-6]: sending signal 'SIGINT' to process[ros2-6]
+[INFO] [drone_marker_node.py-4]: sending signal 'SIGINT' to process[drone_marker_node.py-4]
+[INFO] [sensor_simulator_node-3]: sending signal 'SIGINT' to process[sensor_simulator_node-3]
+[INFO] [fault_injector_node.py-2]: sending signal 'SIGINT' to process[fault_injector_node.py-2]
+[INFO] [quadrotor_dynamics_node-1]: sending signal 'SIGINT' to process[quadrotor_dynamics_node-1]
+[position_controller_node-7] [INFO] [1784797617.294845217] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[sensor_simulator_node-3] [INFO] [1784797617.296334347] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[quadrotor_dynamics_node-1] [INFO] [1784797617.297589637] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2-6] [INFO] [1784797617.347014400] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[ros2-6] [INFO] [1784797617.348513793] [rosbag2_recorder]: Event publisher thread: Exiting
+[ros2-6] [INFO] [1784797617.348619917] [rosbag2_recorder]: Recording stopped
+[INFO] [position_controller_node-7]: process has finished cleanly [pid 45104]
+[INFO] [quadrotor_dynamics_node-1]: process has finished cleanly [pid 45028]
+[INFO] [sensor_simulator_node-3]: process has finished cleanly [pid 45032]
+[INFO] [fault_injector_node.py-2]: process has finished cleanly [pid 45030]
+[INFO] [drone_marker_node.py-4]: process has finished cleanly [pid 45034]
+[INFO] [waypoint_mission_node.py-8]: process has finished cleanly [pid 45106]
+[INFO] [ros2-6]: process has finished cleanly [pid 45038]

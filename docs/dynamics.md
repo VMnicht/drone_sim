@@ -55,7 +55,7 @@ v_dot = R(q) * [0, 0, T] / m + [0, 0, -g] - c_v * v / m
 Omega_dot = I^-1 * (tau - c_Omega .* Omega - Omega x (I * Omega))
 ```
 
-实现中还可叠加世界系外力 `F_disturbance` 和机体系外力矩 `tau_disturbance`。当前 `dynamics.yaml` 中二者均设为零，因此本阶段起飞悬停没有施加干扰。
+实现中可叠加世界系外力 `F_disturbance` 和机体系外力矩 `tau_disturbance`。`dynamics.yaml` 提供常值、正弦、阵风和固定种子随机模式及生效时间窗；基础场景默认为零，`mission_wind_gust.yaml` 会覆盖为正式阵风实验。质量、惯量、机臂和电机系数集中在 `model.yaml`，动力学与控制器共同加载，避免两处参数失配。
 
 平动和角速度使用半隐式 Euler。姿态使用机体系角速度形成增量四元数并右乘，之后每步归一化。
 
@@ -70,7 +70,7 @@ Omega_dot = I^-1 * (tau - c_Omega .* Omega - Omega x (I * Omega))
 
 ## 默认悬停点
 
-默认参数为 `m=1 kg`、`k_F=1.91e-6 N/(rad/s)^2`。理论单电机悬停速度为：
+`model.yaml` 的默认参数为 `m=1 kg`、`k_F=1.91e-6 N/(rad/s)^2`。理论单电机悬停速度为：
 
 ```text
 omega_hover = sqrt(m*g/(4*k_F)) = 1133.15 rad/s
@@ -99,5 +99,4 @@ ROS2 运行检查已验证 launch、参数加载、Odometry、IMU、Path、TF、
 - 地面为简化的非穿透约束，不是接触动力学；
 - IMU 当前为无噪真值；
 - 固定仿真步长由 wall timer 驱动，暂未实现暂停和仿真时钟；
-- 当前已接入模型控制器；传感器噪声和扰动调度器尚未实现。
-
+- 已接入模型控制器、ROS 无关扰动调度器和传感器噪声模型；真值与带噪 Odom/IMU 分离，并提供简化 GPS。

@@ -1,0 +1,39 @@
+/**:
+  ros__parameters:
+    # Frames.
+    world_frame: map
+    body_frame: base_link
+
+    # Dynamics and control interfaces.
+    odometry_topic: /drone/odom
+    imu_topic: /drone/imu
+    gps_topic: /drone/gps
+    truth_odometry_topic: /drone/truth/odom
+    truth_imu_topic: /drone/truth/imu
+    sensor_reset_service: /drone/sensors/reset
+    path_topic: /drone/path
+    motor_state_topic: /drone/motor_rpm
+    motor_command_topic: /drone/motor_rpm_cmd
+    actuator_command_topic: /drone/motor_rpm_faulted
+    goal_topic: /drone/goal
+    raw_goal_topic: /drone/raw_goal
+    reference_topic: /drone/reference
+    trajectory_reference_topic: /drone/trajectory_reference
+    trajectory_path_topic: /drone/trajectory_path
+    reset_service: /drone/reset
+    disturbance_topic: /drone/disturbance
+    disturbance_enable_service: /drone/disturbance/enable
+
+    # Mission, experiment and visualization interfaces.
+    mission_path_topic: /drone/mission_path
+    mission_status_topic: /drone/mission_status
+    marker_topic: /drone/markers
+    goal_marker_topic: /drone/goal_marker
+    obstacle_topic: /map/obstacles
+    obstacle_marker_topic: /map/obstacle_markers
+    local_pointcloud_topic: /drone/local_points
+    voxel_marker_topic: /drone/voxel_map
+    planned_path_topic: /drone/planned_path
+    planner_status_topic: /drone/planner_status
+    fault_status_topic: /fault/status
+    fault_enable_service: /fault/enable

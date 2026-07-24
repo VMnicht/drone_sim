@@ -1,46 +1,109 @@
-# ROS2 Drone Simulator
+# ROS2 小型四旋翼仿真器
 
-一个面向 ROS2 Humble 的小型四旋翼仿真器。当前版本实现了六自由度动力学、模型控制器、自动起飞悬停、目标点与多航点任务、RViz2 飞机可视化，以及自动实验记录和指标绘图。
+面向 Ubuntu 22.04 / ROS2 Humble 的模块化无人机仿真工程。工程实现六自由度动力学、串级模型控制、带噪传感器、解析轨迹、静态地图、局部点云/体素、3D A*、多机仿真、故障注入、Web 地面站和自动评测。
 
-本阶段按任务要求暂不实现地图、碰撞检测和避障。相关空 package 仅保留后续扩展位置，不参与当前验收。
+最重要的架构约束是：动力学、控制、mixer、解析轨迹、扰动和传感器数学模型位于 `drone_core`，只依赖 Eigen/C++ STL；ROS2 节点只负责配置、通信和类型转换。地图、点云、碰撞检测与规划允许依赖 ROS2。
 
-![三套非地图验收场景预览](output/video/drone_demo_contact_sheet.jpg)
+## 已实现功能
 
-## 功能概览
+- 四路电机一阶响应、X 型力/矩分配与六自由度刚体动力学；
+- 位置/速度外环、几何姿态内环、加速度/倾角/推力/力矩/RPM 限幅；
+- ROS 无关的圆、Gerono 八字轨迹及位置/速度/加速度/yaw 前馈；
+- 常值、正弦、阵风和固定种子随机扰动；
+- 真值 Odom/IMU 与带噪 Odom/IMU/GPS 分离，支持偏置和随机游走；
+- YAML box/cylinder 地图、确定性随机障碍物和膨胀 Marker；
+- 有视场、量程、遮挡、噪声和丢点的局部 `PointCloud2` 及体素 Marker；
+- 3D voxel A*、6/18/26 邻接、线段简化、局部重规划和安全保持；
+- 3 架独立 namespace/TF/传感器种子的无人机及安全间距监测；
+- 电机效率/上限、命令丢包/延迟/冻结故障注入；
+- 本地 Web 地面站：状态、高度曲线、目标、重置、扰动/故障启停和实验结果页；
+- 独立任务展示 Panel：30 个任务/加分/交付入口、模式/场景启停、RViz、16 类指标、7 类实测图、日志与全量 YAML 编辑；
+- 11 个正式场景、自动阈值验收、确定性回放和 3×3 参数扫描；
+- RViz2 飞机、旋翼、地图、点云、体素、轨迹、规划路径和扰动力显示。
 
-- 四路 RPM 输入和带一阶响应的电机模型；
-- X 型四旋翼推力、反扭矩和六自由度刚体动力学；
-- ROS 无关的质量/惯量模型控制与几何姿态控制；
-- RPM、倾角、加速度、推力和力矩限幅；
-- Odometry、IMU、TF 和历史 Path 输出；
-- 悬停、单目标点和方形航点任务；
-- RViz2 飞机、旋翼、目标、任务航点和实际轨迹显示；
-- 自动输出 CSV、JSON、位置误差、RPM、姿态和三维轨迹图；
-- 纯核心单元测试、ROS2 launch 集成测试和脚本化实验验收。
+## 一键启动（无需手动 source）
 
-## 环境
-
-- Ubuntu 22.04
-- ROS2 Humble
-- C++17
-- Eigen 3.4+
-
-安装构建与运行依赖：
+脚本会在内部加载 ROS2 和工作区；工作区尚未构建时会自动执行 `colcon build --symlink-install`。
 
 ```bash
-sudo apt update
-sudo apt install -y \
-  ros-humble-desktop ros-humble-eigen3-cmake-module \
-  ros-humble-tf2-ros ros-humble-rviz2 \
-  python3-colcon-common-extensions python3-matplotlib python3-opencv \
-  libeigen3-dev libgtest-dev
+cd ~/drone_sim_ws
+
+# 单机悬停 + RViz2
+./start_sim.sh hover
+
+# 指定实验；加 --rviz 可打开 RViz2
+./start_sim.sh experiment five_obstacles --rviz
+./start_sim.sh experiment wind_gust
+
+# 三机 + 专用 RViz2
+./start_sim.sh multi
+
+# Web 地面站，浏览器打开 http://127.0.0.1:8080
+./start_sim.sh ground-station
+
+# 任务展示 Panel，浏览器打开 http://127.0.0.1:8060
+./start_sim.sh panel
+
+# 11 个场景顺序运行并自动验收
+./start_sim.sh batch
 ```
 
-## 架构约束
+兼容入口 `./start_hover.sh` 仍可使用，它等价于 `./start_sim.sh hover`。
+`modes/` 目录还提供目标点、轨迹、风扰、噪声、故障、避障、多机和地面站的独立免 source 脚本。
 
-动力学、积分器、控制器和 mixer 位于 `drone_core`，核心代码只依赖 Eigen 和 C++ 标准库。ROS2 package 只负责消息转换、参数、定时器、TF 和日志。地图及规划模块允许使用 ROS2 类型。
+## 正式场景
 
-核心库可以不加载 ROS2 环境，直接独立构建和测试：
+| 场景 | 主要验收内容 |
+|---|---|
+| `hover` | 自动起飞与稳态悬停 |
+| `target` | 单目标点 |
+| `square` | YAML 五航点闭环 |
+| `circle` | 解析圆轨迹前馈 |
+| `figure_eight` | 解析八字轨迹前馈 |
+| `wind_gust` | 2 s 阵风、峰值偏差与恢复 |
+| `sensor_noise` | 增强 Odom/IMU 噪声闭环 |
+| `fault_motor` | 0 号电机短时效率下降 |
+| `five_obstacles` | 五障碍物 3D A* |
+| `narrow_passage` | 窄通道与安全膨胀 |
+| `perception_replan` | 局部点云参与重规划 |
+
+实验输出位于 `artifacts/experiments/<scenario>/`：
+
+- `telemetry.csv`、`reference_history.csv`；
+- `summary.json`；
+- 位置、误差、姿态、RPM、三维轨迹、环境指标和总览图。
+
+统一验收：
+
+```bash
+python3 scripts/verify_experiments.py --quiet
+```
+
+当前实测全部通过。代表性结果：
+
+| 项目 | 结果 |
+|---|---:|
+| hover 稳态误差 | 0.0185 m |
+| circle / figure-eight RMS | 0.3737 / 0.3043 m |
+| 3.041 N 阵风恢复时间 | 2.077 s |
+| 噪声场景位置标准差 | [0.0305, 0.0299, 0.0496] m |
+| 电机故障修改命令数 / 最终误差 | 102 / 0.0171 m |
+| 三组避障最小净间隙 | 0.440 / 0.399 / 0.481 m（均大于 0.30 m 合同） |
+| 三机最小观测间距 | 0.786 m（要求 0.75 m） |
+
+## 构建与测试
+
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install
+source install/setup.bash
+colcon test --event-handlers console_direct+
+colcon test-result --verbose
+```
+
+当前全工作区 15 个 package 构建通过，测试为 30 项、0 失败。
+
+ROS 无关核心可以单独构建：
 
 ```bash
 cmake -S src/drone_core -B /tmp/drone_core_build \
@@ -49,213 +112,147 @@ cmake --build /tmp/drone_core_build -j
 ctest --test-dir /tmp/drone_core_build --output-on-failure
 ```
 
-源码边界检查可确认 `src/drone_core/include` 和 `src/drone_core/src` 中不存在 ROS 消息、节点、TF、topic 或 ROS time 依赖。
+## Package 结构
 
-## 坐标系与电机编号
+| Package | 职责 |
+|---|---|
+| `drone_msgs` | RPM、障碍物和轨迹点消息 |
+| `drone_core` | ROS 无关的动力学、控制、mixer、轨迹、扰动、噪声 |
+| `drone_dynamics` | 动力学 ROS2 适配、真值状态、扰动和 TF |
+| `drone_controller` | 控制器 ROS2 适配 |
+| `drone_trajectory` | 解析轨迹节点 |
+| `drone_sensors` | Odom/IMU/GPS 传感器适配 |
+| `drone_map` | 静态几何地图 |
+| `drone_perception` | 局部点云与体素 |
+| `drone_planner` | 3D A* 与路径跟踪 |
+| `drone_fleet` | 多机间距与状态 |
+| `drone_faults` | 确定性故障注入 |
+| `drone_visualization` | 飞机/目标 Marker |
+| `drone_ground_station` | 本地 Web 地面站 |
+| `drone_tools` | 航点任务、记录与绘图 |
+| `drone_bringup` | launch、YAML 和 RViz |
 
-- `map`：ENU 世界坐标系，`+x` 东、`+y` 北、`+z` 上；
-- `base_link`：FLU 机体系，`+x` 前、`+y` 左、`+z` 上；
-- 姿态四元数表示从机体系到世界系的旋转；
-- 总升力沿机体 `+z`，重力沿世界系 `-z`。
-
-俯视电机布局：
+## 数据链
 
 ```text
-                 +x（前）
-                    ^
-       M0 前左 CCW  |  M3 前右 CW
-                  \ | /
-        +y（左）<---+---
-                  / | \
-       M1 后左 CW   |  M2 后右 CCW
+mission / trajectory / planner
+          |
+          v
+TrajectoryPoint / safe goal
+          |
+noisy odom -> controller core -> RPM cmd -> fault injector
+     ^                                      |
+     |                                      v
+sensor model <- truth odom/imu <- dynamics core <- faulted RPM
+     |
+ Odom / IMU / GPS
+
+map -> local point cloud / voxel -> 3D A* -> safe goal
 ```
 
-`MotorRPM.rpm` 数组顺序固定为 `[M0, M1, M2, M3]`。更完整的力矩符号约定见 [动力学说明](docs/dynamics.md)。
+## 主要 ROS2 接口
 
-## 当前模块
+- `/drone/truth/odom`、`/drone/truth/imu`：真值；
+- `/drone/odom`、`/drone/imu`、`/drone/gps`：带噪观测；
+- `/drone/motor_rpm_cmd` → `/drone/motor_rpm_faulted` → `/drone/motor_rpm`；
+- `/drone/raw_goal` → planner → `/drone/goal`；
+- `/drone/trajectory_reference`、`/drone/reference`；
+- `/map/obstacles`、`/map/obstacle_markers`；
+- `/drone/local_points`、`/drone/voxel_map`、`/drone/planned_path`；
+- `/fleet/status`、`/fault/status`；
+- `/drone/reset`、`/drone/sensors/reset`、`/fault/enable`。
 
-| Package | 状态 | 说明 |
-|---|---|---|
-| `drone_msgs` | 已实现 | 电机转速与静态障碍物消息 |
-| `drone_core` | 已实现 | ROS 无关的电机和六自由度刚体动力学 |
-| `drone_dynamics` | 已实现 | 动力学 ROS2 适配节点 |
-| `drone_controller` | 已实现 | 非线性模型控制器 ROS2 适配层 |
-| `drone_map` | 框架 | 静态障碍物地图 |
-| `drone_planner` | 框架 | A* 和路径跟踪 |
-| `drone_visualization` | 已实现 | 飞机、旋翼与目标点 Marker |
-| `drone_bringup` | 已实现 | 参数和启动文件 |
-| `drone_tools` | 已实现 | 航点任务、实验记录和指标绘图 |
+所有接口名称均来自 `interfaces.yaml`。
 
-## 系统数据流
+## YAML 调参
 
-```mermaid
-flowchart LR
-    Goal["目标点 /drone/goal"] --> ControllerNode["控制器 ROS2 适配节点"]
-    Mission["航点任务节点"] --> Goal
-    Odom["/drone/odom"] --> ControllerNode
-    ControllerNode --> CoreController["ROS 无关模型控制器"]
-    CoreController --> Mixer["统一 X 型 mixer"]
-    Mixer --> RPM["/drone/motor_rpm_cmd"]
-    RPM --> DynamicsNode["动力学 ROS2 适配节点"]
-    DynamicsNode --> CoreDynamics["ROS 无关动力学 + 电机一阶模型"]
-    CoreDynamics --> Odom
-    Odom --> Recorder["实验记录与指标绘图"]
-    Odom --> RViz["RViz2"]
-```
+运行参数位于 `src/drone_bringup/config/`，修改后重启即可生效：
 
-## 构建
+- `model.yaml`：质量、惯量、机臂、电机；
+- `controller.yaml`：控制增益和限幅；
+- `dynamics.yaml`：积分、阻力、扰动；
+- `sensors.yaml`：Odom/IMU/GPS 噪声、偏置、频率、种子；
+- `trajectory.yaml`：解析轨迹；
+- `map.yaml`、`perception.yaml`、`planner.yaml`；
+- `faults.yaml`、`fleet.yaml`、`ground_station.yaml`；
+- `mission_*.yaml`：场景目标、覆盖参数、时长、输出；
+- `evaluation.yaml`、`sweep.yaml`：验收、回放、参数扫描。
+- `mode_panel.yaml`：Panel 端口、日志、结果、停止超时、保存后全配置校验和 29 份 YAML 编辑白名单。
+
+完整字段见 [YAML 参数调节指南](docs/parameters.md)。覆盖检查：
 
 ```bash
-cd ~/drone_sim_ws
-source /opt/ros/humble/setup.bash
-colcon build --symlink-install
-source install/setup.bash
+python3 scripts/verify_yaml_parameters.py
 ```
 
-全新终端必须重新执行两条 `source` 命令。
+当前各节点声明参数均为 100% YAML 覆盖。
 
-## 运行动力学节点
+## 创新验收
 
 ```bash
-ros2 launch drone_bringup dynamics.launch.py
+# 双次固定种子回放并比较关键指标
+python3 scripts/replay_scenario.py
+
+# 位置 Kp × 风力 3×3 网格，输出 CSV 和热力图
+python3 scripts/run_parameter_sweep.py
+
+# Web API 和三机安全验收
+python3 scripts/test_ground_station_api.py
+python3 scripts/test_multi_drone.py
 ```
 
-另一个终端发送四路电机命令：
+参考项目差异见 [pengyu_sim / MARSIM 对比](docs/reference_comparison.md)，完整要求状态见 [完成性审计](docs/completion_audit.md)。
+
+## RViz2 与 WSL
+
+`start_sim.sh` 会自动设置 WSLg 常用 Qt 环境。RViz2 已实测正常初始化 OpenGL 4.2。Drone Marker 使用 Reliable + Transient Local、零时间戳、`frame_locked` 和低频刷新，避免晚订阅丢失与 TF 竞争导致闪烁。
+
+若窗口仍未出现：
 
 ```bash
-source /opt/ros/humble/setup.bash
-source ~/drone_sim_ws/install/setup.bash
-ros2 topic pub --rate 50 /drone/motor_rpm_cmd drone_msgs/msg/MotorRPM \
-  "{rpm: [10820.8, 10820.8, 10820.8, 10820.8]}"
+echo "$DISPLAY"
+echo "$WAYLAND_DISPLAY"
+./start_sim.sh hover
 ```
 
-默认参数下理论悬停转速应以节点启动日志中的数值为准。节点接收 RPM，核心动力学内部统一使用 rad/s。
+不要在 Windows PowerShell 中直接运行 Linux 的 `ros2`；应进入 WSL 或执行：
 
-## 起飞悬停与 RViz2
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/tang/drone_sim_ws ./start_sim.sh hover
+```
+
+## 运行稳定性与性能
+
+- `start_sim.sh` 使用工作区级文件锁，同一工作区只允许一个仿真/评测栈，避免重复 topic 和 TF 发布导致模型闪烁；
+- 动力学保持 200 Hz 固定步长，状态/TF、路径采样和路径发布分别为 100/10/5 Hz；路径最多保留 1200 点，DDS/RViz 负载不会随运行时间无限增长；
+- 传感器限流、轨迹相位、航点驻留、故障窗口、记录时轴和运行时看门狗统一使用单调时钟，WSL 系统时间回拨不会再造成约 1.3 秒的里程计断流；
+- 规划跟踪进度只允许前进，进入原有目标容差后锁定原始终点，防止自交路径或重规划导致折返；
+- 最终 RViz 实测：Odom/TF 约 95.23 Hz、最大间隔 12 ms，路径约 4.762 Hz，模型 Marker 稳定 1.000 Hz；路径带宽早期约 44 KB/s、晚期约 115 KB/s，且受点数上限约束；Odom 与 TF 均只有一个发布者。
+
+可重复性能采样：
 
 ```bash
-source /opt/ros/humble/setup.bash
-source ~/drone_sim_ws/install/setup.bash
-ros2 launch drone_bringup hover.launch.py
+./scripts/profile_runtime.sh final_rviz true
 ```
 
-启动后模型会从地面自动起飞并悬停在 `(0, 0, 1.5)`。如果只运行闭环而不打开 RViz2：
-
-```bash
-ros2 launch drone_bringup hover.launch.py use_rviz:=false
-```
-
-发送新目标点：
-
-```bash
-ros2 topic pub --once /drone/goal geometry_msgs/msg/PoseStamped \
-  "{header: {frame_id: map}, pose: {position: {x: 1.0, y: 0.0, z: 1.5}, orientation: {w: 1.0}}}"
-```
-
-当前运行配置中的外力和外力矩扰动均为零。动力学已提供显式扰动入口，后续只需修改 YAML 即可开展抗扰实验。
-
-## 自动验收实验
-
-三种实验均会自动结束，并在指定目录生成 `telemetry.csv`、`summary.json` 和 6 张图表。
-
-```bash
-# 悬停 (0, 0, 1.5)
-ros2 launch drone_bringup experiment.launch.py \
-  scenario:=hover duration:=12.0 \
-  output_dir:=$(pwd)/artifacts/experiments/hover
-
-# 目标点 (2, 1, 1.5)
-ros2 launch drone_bringup experiment.launch.py \
-  scenario:=target duration:=16.0 \
-  output_dir:=$(pwd)/artifacts/experiments/target
-
-# 起飞后沿方形航线飞行并返回
-ros2 launch drone_bringup experiment.launch.py \
-  scenario:=square duration:=20.0 \
-  output_dir:=$(pwd)/artifacts/experiments/square
-```
-
-自动检查全部结果：
-
-```bash
-python3 scripts/verify_experiments.py
-```
-
-当前实测结果：
-
-| 场景 | 最终位置误差 | 稳态误差 | 最大速度 | 最大倾角 | RPM 饱和 | 状态 |
-|---|---:|---:|---:|---:|---:|---|
-| 悬停 | 0.0007 m | 0.0072 m | 1.493 m/s | 0.00° | 0% | 通过 |
-| `(2,1,1.5)` | 0.0027 m | 0.0027 m | 1.977 m/s | 16.61° | 0% | 完成 |
-| 方形航点 | 0.0203 m | 0.0173 m | 1.506 m/s | 12.45° | 0% | 5/5 完成 |
-
-所有最终误差都低于任务要求的 0.3 m。
-
-## ROS2 接口
-
-所有接口默认位于根命名空间；`map -> base_link` TF 由动力学节点发布。
-
-- `/drone/odom` (`nav_msgs/msg/Odometry`)
-- `/drone/imu` (`sensor_msgs/msg/Imu`)
-- `/drone/path` (`nav_msgs/msg/Path`)
-- `/drone/motor_rpm` (`drone_msgs/msg/MotorRPM`)
-- `/drone/motor_rpm_cmd` (`drone_msgs/msg/MotorRPM`)
-- `/drone/goal` (`geometry_msgs/msg/PoseStamped`)
-- `/drone/reference` (`geometry_msgs/msg/PoseStamped`)
-- `/drone/mission_path` (`nav_msgs/msg/Path`)
-- `/drone/mission_status` (`std_msgs/msg/String`)
-- `/drone/markers` (`visualization_msgs/msg/MarkerArray`)
-- `/tf`：`map -> base_link`
-- `/drone/reset` (`std_srvs/srv/Empty`)
-
-主要频率：动力学与 TF 200 Hz，控制器 100 Hz，Path 20 Hz；静态机体 Marker 使用 Reliable + Transient Local QoS，以 1 Hz 低频刷新并通过 `frame_locked` 跟随 TF。
-
-详细设计与阶段计划见 [工程规划.md](工程规划.md)。
-
-## 测试
-
-```bash
-source /opt/ros/humble/setup.bash
-colcon test --packages-select drone_core
-colcon test-result --verbose
-```
-
-当前 `colcon test-result` 统计为 19 项、0 失败。核心测试覆盖电机响应、悬停平衡、力矩符号、mixer 往返、四元数、扰动入口、地面约束、非法输入，以及带电机滞后的悬停和三维目标点闭环。`drone_bringup` 的 launch 集成测试还会自动验证 Odometry、RPM 命令、`map -> base_link` TF、8 个持久化 Marker、1.5 m 起飞收敛和节点正常退出。
-
-## 参数文件
-
-- `src/drone_bringup/config/dynamics.yaml`：质量、惯量、电机、阻力、仿真频率和零值扰动；
-- `src/drone_bringup/config/controller.yaml`：模型参数、位置/姿态增益和安全限幅；
-- `mission_target.yaml`：任务文档要求的 `(2,1,1.5)`；
-- `mission_square.yaml`：固定 yaw 的方形航点序列。
-
-动力学和控制器中的质量、惯量、机臂长度和电机系数必须保持一致。
-
-## 交付物
-
-- 实验数据和图表：`artifacts/experiments/`；
-- PDF 报告：`output/pdf/drone_sim_report.pdf`；
-- 71 秒演示视频：`output/video/drone_demo.mp4`；
-- AI 使用说明：`ai_usage.md`。
+结果位于 `artifacts/performance/final_rviz/`。
 
 ## 已知限制
 
-- 本阶段不包含地图、障碍物和避障；
-- IMU 为无噪真值模型；
-- 地面为简化非穿透约束，不是接触动力学；
-- 航点任务使用固定 yaw。大幅 yaw 阶跃需要进一步加入平滑航向参考和完整期望角速度前馈；
-- 视频是根据真实 ROS2 遥测生成的可视化演示，不是桌面录屏；
-- 尚未配置公开 Git 远端，发布前需要设置仓库地址。
+- 局部点云来自几何表面采样，不是 MARSIM 级点真实 LiDAR；
+- GPS 是局部 ENU 到经纬度的简化模型，不含完整大地测量；输出延迟和丢包可由 YAML 设置；
+- 3D A* 输出折线路径，没有最小 snap 轨迹优化；
+- 多机当前做独立轨迹和安全监测，不做分布式协同避让；
+- Web 服务默认只监听 `127.0.0.1`，不提供认证或公网部署；
+- 公开 Git 仓库：<https://github.com/VMnicht/drone_sim>。
 
-## 故障排查
+## 交付材料
 
-- RViz2 看不到 Drone Model：确认使用最新构建并等待最多 1 秒；模型会在 TF 建立后低频重发。若仍不可见，检查 `/drone/markers` 是否有一个发布者以及 `map -> base_link` TF 是否存在。
-- RViz2 的 Drone Model 闪烁或话题状态反复变为 Error：确认 Marker 为 Transient Local、零时间戳且 `frame_locked=true`，刷新频率为 1 Hz；不要同时启动多个 `drone_marker_node`。
-- RViz2 报 `Fixed Frame [map] does not exist`：先确认 `quadrotor_dynamics_node` 正在运行，再用 `ros2 run tf2_ros tf2_echo map base_link` 检查 TF。节点刚启动时的一次短暂等待正常，持续报错则不正常。
-- 强制结束多个 ROS2 进程后，CLI 卡住或节点互相不可见：先执行 `ros2 daemon stop`；若 Fast DDS 发现状态仍残留，可在所有相关终端统一设置新的测试域，例如 `export ROS_DOMAIN_ID=43`，再重新启动。
-- WSLg 无法打开 RViz2：确认 `echo $DISPLAY` 和 `echo $WAYLAND_DISPLAY` 非空；仍失败时使用 `use_rviz:=false` 运行 headless 实验，不影响核心仿真和自动验收。
-- `ros2 topic pub --once` 的电机命令很快归零：这是 0.5 秒命令超时保护。动力学直驱测试应使用 `--rate 50` 持续发布。
-
-仓库提供 [GitHub Actions 工作流](.github/workflows/ci.yml)，会在 ROS2 Humble 容器中执行完整构建、19 项单元/集成测试、无 ROS standalone 测试以及三套非地图验收场景。
-
-动力学公式、坐标系、电机布局与当前限制见 [docs/dynamics.md](docs/dynamics.md)，控制器原理见 [docs/controller.md](docs/controller.md)。
+- 任务与规划：[任务文档.md](任务文档.md)、[工程规划.md](工程规划.md)；
+- AI 使用记录：[ai_usage.md](ai_usage.md)；
+- 实验数据：`artifacts/experiments/`；
+- 参数扫描：`artifacts/parameter_sweep/`；
+- 回放对比：`artifacts/replay/wind_gust/replay_comparison.json`；
+- 9 页学术论文式 PDF 报告：`output/pdf/drone_sim_report.pdf`（标题黑色黑体、正文宋体）；
+- 151 秒、1280×720 演示视频：`output/video/drone_demo.mp4`；
+- 报告与视频生成脚本：`scripts/generate_report.py`、`scripts/generate_demo_video.py`。

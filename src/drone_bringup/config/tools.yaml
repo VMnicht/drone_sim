@@ -1,0 +1,25 @@
+waypoint_mission_node:
+  ros__parameters:
+    update_frequency: 10.0
+    # Topic names are centralized in interfaces.yaml.
+    transient_qos_depth: 1
+    goal_qos_depth: 10
+    odometry_qos_depth: 20
+
+experiment_recorder:
+  ros__parameters:
+    # Scenario-specific duration/output values are supplied by mission_*.yaml.
+    arrival_tolerance: 0.30
+    check_frequency: 10.0
+    steady_state_window: 2.0
+    saturation_threshold: 0.99
+    figure_dpi: 160
+    dashboard_dpi: 170
+    evaluation_drone_radius: 0.18
+    minimum_safe_obstacle_clearance: 0.30
+
+    # Topic names are centralized in interfaces.yaml.
+    odometry_qos_depth: 50
+    motor_qos_depth: 20
+    auxiliary_qos_depth: 10
+    transient_qos_depth: 1

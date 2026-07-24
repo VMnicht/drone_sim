@@ -1,14 +1,6 @@
 position_controller_node:
   ros__parameters:
-    # Must match the dynamics model.
-    mass: 1.0
-    gravity: 9.81
-    inertia_diagonal: [0.02, 0.02, 0.04]
-    arm_length: 0.17
-    thrust_coefficient: 1.91e-6
-    drag_moment_coefficient: 2.60e-7
-    minimum_motor_speed: 0.0
-    maximum_motor_speed: 2300.0
+    # Shared rigid-body/actuator values are loaded from model.yaml.
 
     # Model-based position and geometric attitude controller.
     position_gain: [3.0, 3.0, 6.0]
@@ -23,7 +15,21 @@ position_controller_node:
 
     controller_frequency: 100.0
     odometry_timeout: 0.2
-    world_frame: map
+    # Once valid closed-loop operation has started, a short WSL scheduling gap
+    # holds equal hover thrust instead of interpreting the gap as motor power-off.
+    odometry_timeout_hover_enabled: true
+    # Frames and topic names are centralized in interfaces.yaml.
     auto_takeoff: true
     takeoff_position: [0.0, 0.0, 1.5]
     takeoff_yaw: 0.0
+
+    command_qos_depth: 20
+    reference_qos_depth: 1
+    odometry_qos_depth: 20
+    goal_qos_depth: 10
+    trajectory_qos_depth: 10
+
+    minimum_quaternion_norm: 1.0e-9
+    goal_change_position_tolerance: 1.0e-6
+    goal_change_yaw_tolerance: 1.0e-6
+    diagnostics_log_throttle_ms: 1000

@@ -1,0 +1,23 @@
+
+Files:             rosbag_20260723T090853Z_0.db3
+Bag size:          9.6 MiB
+Storage id:        sqlite3
+Duration:          30.049237545s
+Start:             Jul 23 2026 17:08:53.992826819 (1784797733.992826819)
+End:               Jul 23 2026 17:09:24.042064364 (1784797764.042064364)
+Messages:          18901
+Topic information: Topic: /drone/mission_status | Type: std_msgs/msg/String | Count: 119 | Serialization Format: cdr
+                   Topic: /fault/status | Type: std_msgs/msg/String | Count: 61 | Serialization Format: cdr
+                   Topic: /drone/motor_rpm | Type: drone_msgs/msg/MotorRPM | Count: 3009 | Serialization Format: cdr
+                   Topic: /drone/truth/odom | Type: nav_msgs/msg/Odometry | Count: 3009 | Serialization Format: cdr
+                   Topic: /drone/imu | Type: sensor_msgs/msg/Imu | Count: 3004 | Serialization Format: cdr
+                   Topic: /drone/odom | Type: nav_msgs/msg/Odometry | Count: 3004 | Serialization Format: cdr
+                   Topic: /drone/reference | Type: geometry_msgs/msg/PoseStamped | Count: 2722 | Serialization Format: cdr
+                   Topic: /drone/gps | Type: sensor_msgs/msg/NavSatFix | Count: 147 | Serialization Format: cdr
+                   Topic: /drone/disturbance | Type: geometry_msgs/msg/WrenchStamped | Count: 3009 | Serialization Format: cdr
+                   Topic: /drone/local_points | Type: sensor_msgs/msg/PointCloud2 | Count: 300 | Serialization Format: cdr
+                   Topic: /drone/planner_status | Type: std_msgs/msg/String | Count: 333 | Serialization Format: cdr
+                   Topic: /drone/path | Type: nav_msgs/msg/Path | Count: 151 | Serialization Format: cdr
+                   Topic: /drone/planned_path | Type: nav_msgs/msg/Path | Count: 2 | Serialization Format: cdr
+                   Topic: /map/obstacles | Type: drone_msgs/msg/ObstacleArray | Count: 31 | Serialization Format: cdr
+

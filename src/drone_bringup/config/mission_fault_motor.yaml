@@ -1,0 +1,19 @@
+fault_injector_node:
+  ros__parameters:
+    fault_enabled: true
+    fault_mode: motor_efficiency
+    fault_target_motor: 0
+    fault_start_time: 5.0
+    fault_duration: 1.0
+    fault_motor_efficiency: 0.82
+
+position_controller_node:
+  ros__parameters:
+    auto_takeoff: true
+
+experiment_recorder:
+  ros__parameters:
+    scenario: fault_motor
+    # Preserve a long post-fault recovery window, including under rosbag load.
+    duration: 18.0
+    output_dir: artifacts/experiments/fault_motor

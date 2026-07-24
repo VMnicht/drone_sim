@@ -1,34 +1,50 @@
 quadrotor_dynamics_node:
   ros__parameters:
-    # Rigid-body parameters, all in SI units.
-    mass: 1.0
-    gravity: 9.81
-    inertia_diagonal: [0.02, 0.02, 0.04]
-    arm_length: 0.17
-
+    # Shared rigid-body/actuator values are in model.yaml.
     # omega is rad/s inside drone_core.
-    thrust_coefficient: 1.91e-6
-    drag_moment_coefficient: 2.60e-7
     motor_time_constant: 0.03
-    minimum_motor_speed: 0.0
-    maximum_motor_speed: 2300.0
 
     linear_drag_coefficient: 0.05
     angular_damping: [0.002, 0.002, 0.002]
     ground_height: 0.0
     ground_restitution: 0.0
 
-    # Explicit disturbance inputs. Kept at zero for the current hover stage.
-    disturbance_force_world: [0.0, 0.0, 0.0]
+    # ROS-independent disturbance generator. Modes: constant, sinusoidal,
+    # gust, random. A duration of zero keeps the source active indefinitely.
+    # The configured 1 N force is inert until enabled through YAML or the
+    # disturbance SetBool service, so the Web ground station can demonstrate it.
+    disturbance_enabled: false
+    disturbance_mode: constant
+    disturbance_force_world: [1.0, 0.0, 0.0]
     disturbance_torque_body: [0.0, 0.0, 0.0]
+    disturbance_amplitude_force_world: [0.0, 0.0, 0.0]
+    disturbance_amplitude_torque_body: [0.0, 0.0, 0.0]
+    disturbance_start_time: 0.0
+    disturbance_duration: 0.0
+    disturbance_frequency: 0.5
+    disturbance_random_correlation_time: 0.5
+    disturbance_random_seed: 1
 
     simulation_frequency: 200.0
-    command_timeout: 0.5
-    path_publish_frequency: 20.0
-    maximum_path_points: 4000
+    # The model advances exactly one fixed dt per scheduler callback. Physics is
+    # never accelerated to catch up after a desktop stall; this preserves the
+    # validated controller/model discrete-time relationship. ROS publication is
+    # deliberately lower to keep DDS/RViz work bounded.
+    state_publish_frequency: 100.0
+    timing_diagnostics_frequency: 0.2
+    # A monotonic-clock watchdog removes stale asymmetric torque after ten
+    # missed 100 Hz controller commands, including during WSL clock correction.
+    command_timeout: 0.1
+    command_timeout_hover_enabled: true
+    path_sample_frequency: 10.0
+    path_publish_frequency: 5.0
+    maximum_path_points: 1200
 
-    world_frame: map
-    body_frame: base_link
+    # Frames and topic/service names are centralized in interfaces.yaml.
+    state_qos_depth: 20
+    path_qos_depth: 10
+    command_qos_depth: 20
+    diagnostics_log_throttle_ms: 1000
     initial_position: [0.0, 0.0, 0.0]
     initial_velocity: [0.0, 0.0, 0.0]
     initial_rpy: [0.0, 0.0, 0.0]

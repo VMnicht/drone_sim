@@ -1,0 +1,36 @@
+sensor_simulator_node:
+  ros__parameters:
+    sensor_noise_enabled: true
+    sensor_publish_frequency: 100.0
+    sensor_random_seed: 11
+    gps_enabled: true
+    gps_publish_frequency: 5.0
+    gps_horizontal_noise_stddev: 0.50
+    gps_vertical_noise_stddev: 0.80
+    gps_dropout_probability: 0.02
+    gps_random_seed: 29
+    gps_dropout_random_seed: 30
+    gps_origin_latitude: 22.302711
+    gps_origin_longitude: 114.177216
+    gps_origin_altitude: 10.0
+    gps_earth_radius: 6378137.0
+    gps_minimum_longitude_cosine: 1.0e-6
+    sensor_minimum_dt: 1.0e-6
+    # Measurement timestamps stay unchanged; these values delay publication.
+    sensor_output_delay: 0.0
+    gps_output_delay: 0.0
+    sensor_minimum_quaternion_norm: 1.0e-9
+
+    # Standard deviations use SI units; orientation values are radians.
+    position_noise_stddev: [0.01, 0.01, 0.015]
+    velocity_noise_stddev: [0.02, 0.02, 0.03]
+    orientation_noise_stddev: [0.002, 0.002, 0.004]
+    accelerometer_noise_stddev: [0.03, 0.03, 0.04]
+    gyroscope_noise_stddev: [0.002, 0.002, 0.003]
+    accelerometer_initial_bias: [0.0, 0.0, 0.0]
+    gyroscope_initial_bias: [0.0, 0.0, 0.0]
+    accelerometer_bias_random_walk: [0.001, 0.001, 0.001]
+    gyroscope_bias_random_walk: [0.0001, 0.0001, 0.0001]
+
+    sensor_truth_qos_depth: 20
+    sensor_output_qos_depth: 20

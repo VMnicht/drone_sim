@@ -1,0 +1,4 @@
+Double value is: 200.0
+Double value is: 100.0
+Double value is: 10.0
+Double value is: 5.0

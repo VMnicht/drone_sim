@@ -1,0 +1,32 @@
+[INFO] [launch]: All log files can be found below /home/tang/.ros/log/2026-07-23-16-15-00-504407-LAPTOP-AC5N9NOG-27200
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fault_injector_node.py-1]: process started with pid [27221]
+[INFO] [quadrotor_dynamics_node-2]: process started with pid [27223]
+[INFO] [position_controller_node-3]: process started with pid [27225]
+[INFO] [sensor_simulator_node-4]: process started with pid [27227]
+[INFO] [drone_marker_node.py-5]: process started with pid [27229]
+[position_controller_node-3] [INFO] [1784794500.557149229] [position_controller_node]: Model-based controller ready at 100.0 Hz; auto takeoff enabled to (0.00, 0.00, 1.50)
+[sensor_simulator_node-4] [INFO] [1784794500.557408325] [sensor_simulator_node]: Sensor simulator ready at 100.0 Hz; noise enabled
+[quadrotor_dynamics_node-2] [INFO] [1784794500.559901703] [quadrotor_dynamics_node]: Dynamics ready: fixed-step 200.0 Hz, state 100.0 Hz, path sample/publish 10.0/5.0 Hz; hover speed 1133.15 rad/s (10820.8 RPM)
+[quadrotor_dynamics_node-2] [INFO] [1784794500.560000026] [quadrotor_dynamics_node]: A non-zero external disturbance is configured (disabled)
+[fault_injector_node.py-1] [INFO] [1784794500.708775454] [fault_injector_node]: Fault injector ready in mode 'none', enabled=False
+[quadrotor_dynamics_node-2] [INFO] [1784794505.562815936] [quadrotor_dynamics_node]: Timing 5.00 s: integration 199.9 Hz, state/TF 188.7 Hz, path 5.0 Hz, backlog 2.719 ms
+[quadrotor_dynamics_node-2] [INFO] [1784794510.565163466] [quadrotor_dynamics_node]: Timing 5.00 s: integration 200.1 Hz, state/TF 190.7 Hz, path 5.0 Hz, backlog 0.050 ms
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT) again, ignoring...
+[INFO] [drone_marker_node.py-5]: sending signal 'SIGINT' to process[drone_marker_node.py-5]
+[INFO] [sensor_simulator_node-4]: sending signal 'SIGINT' to process[sensor_simulator_node-4]
+[INFO] [position_controller_node-3]: sending signal 'SIGINT' to process[position_controller_node-3]
+[INFO] [quadrotor_dynamics_node-2]: sending signal 'SIGINT' to process[quadrotor_dynamics_node-2]
+[INFO] [fault_injector_node.py-1]: sending signal 'SIGINT' to process[fault_injector_node.py-1]
+[quadrotor_dynamics_node-2] [INFO] [1784794513.152873466] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[sensor_simulator_node-4] [INFO] [1784794513.152893293] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[position_controller_node-3] [INFO] [1784794513.152897224] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[sensor_simulator_node-4] [INFO] [1784794513.155524043] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[position_controller_node-3] [INFO] [1784794513.155906979] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[quadrotor_dynamics_node-2] [INFO] [1784794513.156243152] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [position_controller_node-3]: process has finished cleanly [pid 27225]
+[INFO] [sensor_simulator_node-4]: process has finished cleanly [pid 27227]
+[INFO] [quadrotor_dynamics_node-2]: process has finished cleanly [pid 27223]
+[INFO] [fault_injector_node.py-1]: process has finished cleanly [pid 27221]
+[INFO] [drone_marker_node.py-5]: process has finished cleanly [pid 27229]
