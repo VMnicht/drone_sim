@@ -9,9 +9,14 @@ __pycache__/
 *.bag
 *.db3
 *.mcap
+~$*.docx
 
 # Local Panel sessions are transient; formal acceptance evidence lives under
 # artifacts/experiments and is intentionally versioned.
 artifacts/panel_logs/
 artifacts/panel_runs/
 artifacts/panel_yaml_backups/
+
+# Report diagrams and RGB conversion caches are reproducible intermediates.
+# Only the final DOCX/PDF deliverables are versioned.
+output/report_assets/
