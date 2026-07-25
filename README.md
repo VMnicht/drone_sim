@@ -248,11 +248,10 @@ wsl -d Ubuntu-22.04 --cd /home/tang/drone_sim_ws ./start_sim.sh hover
 
 ## 交付材料
 
-- 任务与规划：[任务文档.md](任务文档.md)、[工程规划.md](工程规划.md)；
 - AI 使用记录：[ai_usage.md](ai_usage.md)；
 - 实验数据：`artifacts/experiments/`；
 - 参数扫描：`artifacts/parameter_sweep/`；
 - 回放对比：`artifacts/replay/wind_gust/replay_comparison.json`；
-- 9 页学术论文式 PDF 报告：`output/pdf/drone_sim_report.pdf`（标题黑色黑体、正文宋体）；
+- 9 页学术论文式 PDF 报告：`output/pdf/drone_sim_academic_report.pdf`（标题黑色黑体、正文宋体）；
 - 151 秒、1280×720 演示视频：`output/video/drone_demo.mp4`；
-- 报告与视频生成脚本：`scripts/generate_report.py`、`scripts/generate_demo_video.py`。
+- 报告与视频生成脚本：`scripts/generate_academic_report_docx.py`、`scripts/generate_demo_video.py`。
