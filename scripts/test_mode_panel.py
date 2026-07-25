@@ -96,8 +96,8 @@ def main():
             "demo_hover", "demo_target", "demo_square", "demo_five",
             "demo_narrow", "demo_stability", "yaml", "wind", "noise",
             "pointcloud", "multi", "circle", "figure", "evaluation",
-            "station", "comparison", "fault", "sweep", "task", "readme",
-            "report", "video", "git", "ai", "audit",
+            "station", "comparison", "fault", "sweep", "dynamics_doc", "readme",
+            "report", "video", "parameters_doc", "ai", "audit",
         }
         if showcase != required_showcase:
             raise RuntimeError(
@@ -120,9 +120,9 @@ def main():
         if image_type != "image/png" or not image.startswith(b"\x89PNG"):
             raise RuntimeError("published experiment figure is not a PNG")
         request_bytes("/artifact?scenario=hover&name=../summary.json", expected=400)
-        task, task_type = request_bytes("/file?name=task")
-        if task_type not in {"text/markdown", "text/plain"} or "任务要求" not in task.decode("utf-8"):
-            raise RuntimeError("task document was not published correctly")
+        dynamics, dynamics_type = request_bytes("/file?name=dynamics_doc")
+        if dynamics_type not in {"text/markdown", "text/plain"} or "动力学模块说明" not in dynamics.decode("utf-8"):
+            raise RuntimeError("dynamics document was not published correctly")
         report, report_type = request_bytes("/file?name=report")
         if report_type != "application/pdf" or not report.startswith(b"%PDF"):
             raise RuntimeError("report was not published correctly")

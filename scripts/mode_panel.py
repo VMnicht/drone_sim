@@ -36,7 +36,7 @@ SHOWCASE_SECTIONS = [
     {
         "id": "core",
         "name": "核心必做功能",
-        "description": "对应任务文档第二、四章：从电机 RPM 到安全路径和 RViz2。",
+        "description": "覆盖从电机 RPM 到安全路径和 RViz2 的核心功能。",
         "items": [
             {"id": "dynamics", "name": "六自由度动力学", "requirement": "四电机 RPM、一阶响应、推力/力矩、刚体积分、TF/Odom/IMU/Path", "action": {"type": "launch", "mode": "hover", "scenario": "hover", "rviz": True}, "view": "hover"},
             {"id": "controller", "name": "模型控制器与 Mixer", "requirement": "目标点到期望姿态、总推力/三轴力矩和四路 RPM，含多级限幅", "action": {"type": "launch", "mode": "experiment", "scenario": "target", "rviz": True}, "view": "target"},
@@ -48,7 +48,7 @@ SHOWCASE_SECTIONS = [
     {
         "id": "acceptance",
         "name": "最低验收与稳定性展示",
-        "description": "对应任务文档第五章；每张卡可启动真实 ROS2 场景并查看实测曲线。",
+        "description": "每张卡可启动真实 ROS2 场景并查看实测曲线。",
         "items": [
             {"id": "demo_hover", "name": "悬停实验", "requirement": "从地面起飞并稳定在 (0,0,1.5)", "action": {"type": "launch", "mode": "experiment", "scenario": "hover", "rviz": True}, "view": "hover"},
             {"id": "demo_target", "name": "目标点实验", "requirement": "飞向 (2,1,1.5) 并悬停", "action": {"type": "launch", "mode": "experiment", "scenario": "target", "rviz": True}, "view": "target"},
@@ -61,7 +61,7 @@ SHOWCASE_SECTIONS = [
     {
         "id": "bonus",
         "name": "全部加分项与创新扩展",
-        "description": "任务文档第六章 10 个方向均有独立入口。",
+        "description": "10 个加分方向均有独立入口。",
         "items": [
             {"id": "yaml", "name": "全量 YAML 参数", "requirement": "质量、惯量、电机系数、控制增益及全部运行参数", "action": {"type": "config", "name": "model.yaml"}},
             {"id": "wind", "name": "风扰恢复", "requirement": "3.04 N 阵风、误差峰值与恢复时间", "action": {"type": "launch", "mode": "experiment", "scenario": "wind_gust", "rviz": True}, "view": "wind_gust"},
@@ -80,13 +80,13 @@ SHOWCASE_SECTIONS = [
     {
         "id": "delivery",
         "name": "交付与可追溯材料",
-        "description": "任务文档第二、七、八章要求的文档和材料。",
+        "description": "工程使用、验收与提交所需的文档和材料。",
         "items": [
-            {"id": "task", "name": "任务文档", "requirement": "原始验收要求", "action": {"type": "file", "name": "task"}},
+            {"id": "dynamics_doc", "name": "动力学模型说明", "requirement": "坐标系、动力学公式、电机模型和 ROS2 解耦边界", "action": {"type": "file", "name": "dynamics_doc"}},
             {"id": "readme", "name": "完整 README", "requirement": "架构、构建、启动、参数、场景与限制", "action": {"type": "file", "name": "readme"}},
             {"id": "report", "name": "学术论文式 PDF 报告", "requirement": "方法、公式、实验、失败案例、比较、AI 使用和反思", "action": {"type": "file", "name": "report"}},
             {"id": "video", "name": "演示视频", "requirement": "1 到 3 分钟录屏材料", "action": {"type": "file", "name": "video"}},
-            {"id": "git", "name": "公开 Git 交付状态", "requirement": "源代码、提交历史、复现说明与远端发布边界", "action": {"type": "file", "name": "git"}},
+            {"id": "parameters_doc", "name": "参数调节指南", "requirement": "YAML 文件索引、参数作用、安全合同和修改流程", "action": {"type": "file", "name": "parameters_doc"}},
             {"id": "ai", "name": "AI 使用记录", "requirement": "工具、关键交互、错误、人工修正和验证", "action": {"type": "file", "name": "ai"}},
             {"id": "audit", "name": "完成性审计", "requirement": "逐项证据、指标和复核命令", "action": {"type": "file", "name": "audit"}},
         ],
@@ -94,14 +94,14 @@ SHOWCASE_SECTIONS = [
 ]
 
 PUBLISHED_FILES = {
-    "task": ("任务文档", Path("任务文档.md")),
+    "dynamics_doc": ("动力学模型说明", Path("docs/dynamics.md")),
+    "parameters_doc": ("参数调节指南", Path("docs/parameters.md")),
     "readme": ("README", Path("README.md")),
     "ai": ("AI 使用记录", Path("ai_usage.md")),
     "audit": ("完成性审计", Path("docs/completion_audit.md")),
     "comparison": ("参考项目对比", Path("docs/reference_comparison.md")),
-    "report": ("学术报告", Path("output/pdf/drone_sim_report.pdf")),
+    "report": ("学术报告", Path("output/pdf/drone_sim_academic_report.pdf")),
     "video": ("演示视频", Path("output/video/drone_demo.mp4")),
-    "git": ("Git 交付状态", Path("docs/git_delivery.md")),
     "sweep": ("参数扫描热图", Path("artifacts/parameter_sweep/heatmap.png")),
 }
 

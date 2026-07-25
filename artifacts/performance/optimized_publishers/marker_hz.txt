@@ -1,6 +1,0 @@
-average rate: 1.000
-	min: 0.999s max: 1.000s std dev: 0.00058s window: 2
-average rate: 1.000
-	min: 0.999s max: 1.000s std dev: 0.00054s window: 3
-average rate: 1.000
-	min: 0.999s max: 1.000s std dev: 0.00051s window: 5
