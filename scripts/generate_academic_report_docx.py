@@ -587,56 +587,19 @@ def scenario_table_rows(summaries: dict[str, dict]) -> list[list[str]]:
 
 
 def add_title_page(doc: Document) -> None:
-    p = doc.add_paragraph()
-    p.paragraph_format.space_before = Pt(22)
-    p.paragraph_format.space_after = Pt(10)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run("课程设计报告")
-    set_font(run, "黑体", 16, bold=True)
-
     p = doc.add_paragraph(style="Title")
+    p.paragraph_format.space_before = Pt(12)
+    p.paragraph_format.space_after = Pt(12)
     p.add_run("ROS2 小型四旋翼无人机仿真系统的设计与实现")
     apply_run_fonts(p, "黑体", 22, bold=True)
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.first_line_indent = Pt(0)
-    p.paragraph_format.space_after = Pt(18)
-    run = p.add_run("Design and Implementation of a Lightweight Quadrotor Simulator Based on ROS2")
-    set_font(run, "黑体", 12, bold=True)
-
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.first_line_indent = Pt(0)
-    p.paragraph_format.space_after = Pt(10)
-    run = p.add_run("姓名：____________    学号：____________    班级：____________")
-    set_font(run, "宋体", 10.5)
-
-    meta = doc.add_table(rows=3, cols=2)
-    meta.style = "Table Grid"
-    meta.alignment = WD_TABLE_ALIGNMENT.CENTER
-    set_table_width(meta, [1800, 6000], indent_dxa=635)
-    metadata = [
-        ("开发环境", "Ubuntu 22.04、ROS2 Humble、C++17、Python 3"),
-        ("代码仓库", "https://github.com/VMnicht/drone_sim"),
-        ("完成日期", "2026 年 7 月"),
-    ]
-    for row, pair in zip(meta.rows, metadata):
-        for index, value in enumerate(pair):
-            cell = row.cells[index]
-            cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
-            set_cell_margins(cell, top=80, bottom=80)
-            if index == 0:
-                set_cell_shading(cell, GRAY_2)
-            p2 = cell.paragraphs[0]
-            p2.alignment = WD_ALIGN_PARAGRAPH.CENTER if index == 0 else WD_ALIGN_PARAGRAPH.LEFT
-            p2.paragraph_format.first_line_indent = Pt(0)
-            p2.paragraph_format.space_after = Pt(0)
-            r = p2.add_run(value)
-            set_font(r, "黑体" if index == 0 else "宋体", 9.5, bold=index == 0)
-
-    doc.add_paragraph().paragraph_format.space_after = Pt(3)
-    add_heading(doc, "摘  要", 1)
+    p.paragraph_format.space_before = Pt(2)
+    p.paragraph_format.space_after = Pt(6)
+    run = p.add_run("摘  要")
+    set_font(run, "黑体", 14, bold=True)
     abstract = (
         "本项目完成了一套面向课程实验的小型四旋翼仿真系统。系统运行于 ROS2 Humble，核心动力学、控制器、"
         "电机分配器、轨迹、扰动和传感器数学模型集中在 drone_core 中，只依赖 Eigen 与 C++ 标准库。ROS2 节点"
@@ -656,12 +619,11 @@ def add_title_page(doc: Document) -> None:
 
     p = doc.add_paragraph()
     p.paragraph_format.first_line_indent = Pt(0)
-    p.paragraph_format.space_after = Pt(0)
+    p.paragraph_format.space_after = Pt(8)
     r1 = p.add_run("关键词：")
     set_font(r1, "黑体", 10.5, bold=True)
     r2 = p.add_run("四旋翼；ROS2；六自由度动力学；几何控制；三维 A*；仿真评测")
     set_font(r2, "宋体", 10.5)
-    doc.add_page_break()
 
 
 def build_report(root: Path, output_path: Path) -> None:
