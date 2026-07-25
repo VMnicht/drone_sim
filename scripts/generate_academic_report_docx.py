@@ -798,7 +798,6 @@ def build_report(root: Path, output_path: Path) -> None:
         "[3] Lee T, Leok M, McClamroch N H. Geometric Tracking Control of a Quadrotor UAV on SE(3)[C]//49th IEEE Conference on Decision and Control. 2010: 5420-5425.",
         "[4] Quigley M, Conley K, Gerkey B, et al. ROS: An Open-source Robot Operating System[C]//ICRA Workshop on Open Source Software. 2009.",
         "[5] Open Robotics. ROS 2 Humble Documentation[EB/OL]. https://docs.ros.org/en/humble/.",
-        "[6] VMnicht. drone_sim: ROS2 小型四旋翼仿真器[EB/OL]. https://github.com/VMnicht/drone_sim, 2026.",
     ]
     for item in references:
         p = doc.add_paragraph(style="ReferenceAcademic")
